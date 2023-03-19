@@ -3,6 +3,10 @@ const router = express.Router();
 const User = require("../../models/user.js");
 const passport = require("passport");
 
+router.get("/", (req, res) => {
+  return req.user ? res.send(req.user) : res.status(401).send({ msg: "Unauthorized"})
+});
+
 router.get("/login", (req, res) => {
   return res.send(req.session);
 });
@@ -44,10 +48,6 @@ router.post("/register", (req, res) => {
     .catch((err) => res.send(err));
 
   return res.send("Successful");
-});
-
-router.get("/", (req, res) => {
-  return res.send(req.session);
 });
 
 module.exports = router;
