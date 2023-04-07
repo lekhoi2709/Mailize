@@ -3,9 +3,8 @@ const router = express.Router();
 const AuthRouter = require("./auth/index.js");
 
 router.use("/auth", AuthRouter);
-
-router.get("/", (req, res) => {
-  return res.send("Home Page.");
-});
+router.use("/", (req, res) => {
+   return res.json(req.session)
+})
 
 module.exports = router;
