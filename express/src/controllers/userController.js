@@ -6,25 +6,30 @@ module.exports = {
    login: async (req, res) => {
       const { username, password } = req.body
 
-      await User.findOne({ username: username }).then(user => {
-         if (!user) {
-            return res.status(401).json({ code: 3, msg: "Username not found" })
-         }
+      await User.findOne({ username: username })
+         .then(user => {
+            if (!user) {
+               return res.status(401).json({ code: 3, msg: "Username not found" })
+            }
 
-         bcrypt.compare(password, user.password, (err, result) => {
-            if (err) {
+            return bcrypt.compare(password, user.password)
+         })
+         .then(matchPassword => {
+
+            if (!matchPassword) {
                return res.status(401).json({ code: 3, msg: "Incorrect password" })
             }
 
-            jwt.sign({ username: user.username }, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
+            jwt.sign({ username: username }, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
                if (err) {
-                  return res.status(401).json({ code: 2, err: err })
+                  return res.status(401).json({ code: 2, msg: err })
                }
                req.session.token = token
                return res.status(200).json({ code: 0, msg: "Login successfully", token })
             })
+
          })
-      }).catch(e => res.status(401).json({ code: 2, err: e }))
+         .catch(e => res.status(401).json({ code: 2, msg: "Error" }))
    },
 
    register: (req, res) => {
