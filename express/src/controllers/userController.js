@@ -3,16 +3,16 @@ const bcrypt = require("bcrypt")
 const User = require("../models/user")
 
 module.exports = {
-   login: (req, res) => {
+   login: async (req, res) => {
       const { username, password } = req.body
 
-      User.findOne({ username: username }).then(user => {
+      await User.findOne({ username: username }).then(user => {
          if (!user) {
             return res.status(401).json({ code: 3, msg: "Username not found" })
          }
 
          bcrypt.compare(password, user.password, (err, result) => {
-            if (err || !result) {
+            if (err) {
                return res.status(401).json({ code: 3, msg: "Incorrect password" })
             }
 
