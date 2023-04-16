@@ -1,14 +1,18 @@
-require("dotenv").config();
+if (process.env.NODE_ENV == "development") {
+   require("dotenv").config();
+}
 const express = require("express");
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 8080;
+const { MONGO_HOST, DB_PORT, DB_NAME } = process.env;
+const dbUrl = `mongodb://${MONGO_HOST}:${DB_PORT}/${DB_NAME}`;
 
 // import dependencies
 const cors = require("cors");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
-const flash = require("express-flash")
-const MongoStore = require("connect-mongo")
+const flash = require("express-flash");
+const MongoStore = require("connect-mongo");
 
 const Router = require("./routes/mainRouter.js");
 
@@ -16,24 +20,28 @@ function App() {
    const app = express();
    //app setting
    app.use(cookieParser(process.env.SECRET));
-   app.use(session({
-      secret: process.env.SECRET,
-      resave: false,
-      saveUninitialized: false,
-      cookie: { maxAge: 60000 * 60 }, // 1 hour
-      store: MongoStore.create({
-         mongoUrl: process.env.MONGO_URL
+   app.use(
+      session({
+         secret: process.env.SECRET,
+         resave: false,
+         saveUninitialized: false,
+         cookie: { maxAge: 3600000 }, // 1 hour
+         store: MongoStore.create({
+            mongoUrl: dbUrl,
+         }),
       })
-   }));
+   );
    app.use(express.json());
    app.use(express.urlencoded({ extended: false }));
-   app.use(flash())
+   app.use(flash());
 
    // enable CORS
-   app.use(cors({
-      origin: ["http://localhost:3000"],
-      credentials: true,
-   }));
+   app.use(
+      cors({
+         origin: ["http://localhost:3000"],
+         credentials: true,
+      })
+   );
 
    //app router
    app.use("/api", Router);
@@ -44,20 +52,21 @@ function App() {
 // start server
 async function main() {
    try {
-      mongoose.connect(process.env.MONGO_URL, {
-         useNewUrlParser: true,
-      });
-
-      const app = App();
-      app.listen(
-         port,
-         () =>
-            console.log(
-               `${process.env.NODE_ENV}: Ready on http://localhost:${port}`,
-            ),
-      );
-   } catch (err) {
-      console.log(err);
+      mongoose
+         .connect(dbUrl, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+         })
+         .then(() => {
+            const app = App();
+            app.listen(port, () =>
+               console.log(
+                  `${process.env.NODE_ENV}: Ready on http://localhost:${port}`
+               )
+            );
+         });
+   } catch (e) {
+      console.log(e);
    }
 }
 
