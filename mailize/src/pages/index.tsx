@@ -36,7 +36,7 @@ export default function Home() {
          </div>
          <picture className="w-full h-screen absolute z-0">
             <Image
-               src="/assets/bg1.jpg"
+               src="/images/bg1.jpg"
                alt=""
                fill
                className="contain"
