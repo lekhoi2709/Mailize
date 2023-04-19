@@ -4,9 +4,9 @@ const User = require("../models/user")
 
 module.exports = {
    login: async (req, res) => {
-      const { username, password } = req.body
+      const { email, password } = req.body
 
-      await User.findOne({ username: username })
+      await User.findOne({ username: email })
          .then(user => {
             if (!user) {
                return res.status(401).json({ code: 3, msg: "Username not found" })
@@ -20,7 +20,7 @@ module.exports = {
                return res.status(401).json({ code: 3, msg: "Incorrect password" })
             }
 
-            jwt.sign({ username: username }, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
+            jwt.sign({ username: email }, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
                if (err) {
                   return res.status(401).json({ code: 2, msg: err })
                }
@@ -33,18 +33,18 @@ module.exports = {
    },
 
    register: (req, res) => {
-      const { username, email, phone, password } = req.body;
-      try {
-         bcrypt.hash(password, 10, async (err, hash) => {
-            if (err) {
-               return res.status(401).json({ code: 2, msg: err })
-            }
+      const { lastName, firstName, email, phone, password } = req.body;
+      bcrypt.hash(password, 10, async (err, hash) => {
+         if (err) {
+            return res.status(401).json({ code: 2, msg: err })
+         }
 
-            const user = await User.create({ username: username, email: email, phone: phone, password: hash })
+         try {
+            const user = await User.create({ username: email, phone: phone, password: hash, lastName: lastName, firstName: firstName })
             return res.status(200).json({ code: 0, user, msg: "Register Successful" })
-         })
-      } catch (e) {
-         return res.status(401).json({ code: 2, msg: e })
-      }
+         } catch (e) {
+            return res.status(401).json({ code: 2, msg: e })
+         }
+      })
    }
 }
