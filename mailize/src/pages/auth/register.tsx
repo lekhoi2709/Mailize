@@ -1,12 +1,22 @@
+import Image from "next/image";
+import Link from 'next/link';
+
 import { useState, useEffect, useMemo, useRef } from 'react'
-import { TextField, Button, InputAdornment, IconButton } from "@mui/material";
+import { TextField, Button, InputAdornment, IconButton, Backdrop } from "@mui/material";
+
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircularProgress from '@mui/material/CircularProgress';
+
 import axios from 'axios';
+
 import { Dancing_Script, Lora } from "next/font/google";
-import Image from "next/image";
-import Link from 'next/link';
+
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as Yup from 'yup'
+
+//
 
 const dancing = Dancing_Script({
    subsets: ["latin"],
@@ -15,115 +25,99 @@ const dancing = Dancing_Script({
 const lora = Lora({ subsets: ["latin"] });
 
 type Validate = {
-   lastName: string,
-   firstName: string,
    email: string,
    phone: string,
    passHelper: string,
    confirm: boolean
 }
 
+interface FormInput {
+   lastName: string,
+   firstName: string,
+   email: string,
+   phone: string,
+   password: string,
+   confirm: boolean
+}
+
 export default function Register() {
+
+   const formSchema = Yup.object().shape({
+      lastName: Yup.string()
+         .required("Please enter your last name"),
+      firstName: Yup.string()
+         .required("Please enter your first name"),
+      email: Yup.string()
+         .required("Please enter your email")
+         .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
+      phone: Yup.string()
+         .required("Please enter your phone number")
+         .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, "Please enter existed phone number"),
+      password: Yup.string()
+         .required("Please enter your password")
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+      confirm: Yup.string()
+         .required("Please confirm your password")
+         .oneOf([Yup.ref('password')], "Password does not match")
+   })
+
+
+   const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })
+
    const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>()
 
    const [isLoading, setLoading] = useState<boolean>(false)
-   const [lastName, setLastName] = useState<string>("Doe");
-   const [firstName, setFirstName] = useState<string>("John");
-   const [email, setEmail] = useState<string>("example@example.com");
-   const [phone, setPhone] = useState<string>("123");
-   const [password, setPassword] = useState<string>("Example1");
-   const [confirm, setConfirm] = useState<boolean>(true)
-   const [passHelper, setPassHelper] = useState<string>("")
+
+   const [error, setError] = useState<string | undefined>()
 
 
    useEffect(() => {
       clearTimeout(timerRef.current)
    }, [])
 
-   const submitHandler = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-      event.preventDefault()
-
-      const payload = {
-         email,
-         phone,
-         password,
-         lastName,
-         firstName,
-      }
-
-      setLoading(true)
-
-      try {
-         const data = await axios({
-            url: "http://localhost:8080/api/auth/register",
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json"
-            },
-            data: payload
-         })
-         console.log(data)
-      } catch (err) {
-         console.log(err)
-      }
-
-      timerRef.current = setTimeout(() => {
-         setLoading(false)
-      }, 2000)
-   }
-
-   const emailHandler = (value: string) => {
-      const isEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
-
-      if (isEmail.test(value)) {
-         setEmail(value)
-      }
-      else {
-         setEmail("")
-      }
-   }
-
-   const phoneHandler = (value: string) => {
-      const isPhone = /^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/
-      if (isPhone.test(value)) {
-         setPhone(value)
-      } else {
-         setPhone("")
-      }
-   }
-
-   const passwordHandler = (value: string) => {
-      const isContainUpper = /^(?=.*[A-Z])/;
-      const isContainNumber = /^(?=.*[0-9])/;
-      const isValidLength = /^.{6,16}$/;
-
-      if (isValidLength.test(value)) {
-         if (isContainUpper.test(value) && isContainNumber.test(value)) {
-            setPassword(value)
-            setPassHelper("")
-         } else {
-            setPassHelper("Password must contain at least 1 Uppercase character and 1 number.")
-         }
-      } else {
-         setPassHelper("Password must be 6-16 characters long.")
-      }
-   }
-
    const [eye, setEye] = useState(false);
    const eyeHandle = () => {
       setEye(!eye);
    }
 
-   const validation = useMemo<boolean>(() => {
-      const submitValidate = (props: Validate) => {
-         if (props.lastName != "" && props.firstName != "" && props.email != "" && props.phone != "" && props.passHelper == "" && props.confirm) {
-            return true
-         } else {
-            return false
-         }
+   const closeBackDrop = () => {
+      setError(undefined)
+   }
+
+   const onSubmit: SubmitHandler<FormInput> = (data) => {
+      const { email, phone, lastName, firstName, password } = data
+
+      const payload = {
+         email, phone, lastName, firstName, password
       }
-      return submitValidate({ lastName, firstName, email, phone, passHelper, confirm })
-   }, [lastName, firstName, email, phone, passHelper, confirm])
+
+      setLoading(true)
+
+      // try {
+      //    const data = await axios({
+      //       url: "http://localhost:8080/api/auth/register",
+      //       method: "POST",
+      //       headers: {
+      //          "Content-Type": "application/json"
+      //       },
+      //       data: payload
+      //    })
+
+      // } catch (err: any) {
+      //    if (err.response.data.msg.keyPattern.username) {
+      //       setError("That email is taken. Try another")
+      //    } else if (err.response.data.msg.keyPattern.phone) {
+      //       setError("That phone number is taken. Try another")
+      //    } else {
+      //       console.log(err)
+      //    }
+      // }
+
+      console.log(payload)
+      timerRef.current = setTimeout(() => {
+         setLoading(false)
+      }, 1500)
+   };
 
    return (
       <div className={`${lora.className} md:flex md:justify-center md:items-center w-screen h-screen`}>
@@ -141,93 +135,81 @@ export default function Register() {
                <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
                <h1 className="text-lg">Create Account for Mailize</h1>
             </section>
-            <section className="flex flex-col gap-8 md:justify-evenly w-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 md:justify-evenly w-full">
                <div className="flex flex-col gap-8 md:flex-row md:gap-6 w-full">
                   <TextField
-                     // error={lastName == ""}
-                     // helperText={lastName != "" ? "" : "Please enter your last name"}
+                     error={Boolean(errors.lastName)}
+                     helperText={errors?.lastName?.message}
                      label="Last Name"
                      id="lastName"
-                     name="lastName"
-                     onChange={(e) => { setLastName(e.target.value) }}
                      size='small'
                      className='w-full text-sm'
                      InputProps={{ style: { fontSize: 15 } }}
                      InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('lastName')}
                   />
                   <TextField
-                     // error={firstName == ""}
-                     // helperText={firstName != "" ? "" : "Please enter your first name"}
+                     error={Boolean(errors.firstName)}
+                     helperText={errors?.firstName?.message}
                      label="First Name"
                      id="firstName"
-                     name="firstName"
-                     onChange={(e) => { setFirstName(e.target.value) }}
                      size='small'
                      className='w-full'
                      InputProps={{ style: { fontSize: 15 } }}
                      InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('firstName')}
                   />
                </div>
 
                <TextField
-                  error={email == ""}
-                  helperText={email != "" ? "" : "Please enter correct format of email"}
+                  error={Boolean(errors.email)}
+                  helperText={errors?.email?.message}
                   label="Email"
                   id="email"
-                  name="email"
-                  onChange={(e) => { emailHandler(e.target.value) }}
                   size='small'
                   InputProps={{ style: { fontSize: 15 } }}
                   InputLabelProps={{ style: { fontSize: 15 } }}
+                  {...register('email')}
                />
                <TextField
-                  error={phone == ""}
-                  helperText={phone != "" ? "" : "Plese enter existed phone number"}
+                  error={Boolean(errors.phone)}
+                  helperText={errors?.phone?.message}
                   type="tel"
                   label="Phone"
                   id="phone"
-                  name="phone"
-                  onChange={(e) => { phoneHandler(e.target.value) }}
                   size='small'
                   InputProps={{
                      startAdornment: <InputAdornment position='start'>+84</InputAdornment>,
                      style: { fontSize: 15 }
                   }}
                   InputLabelProps={{ style: { fontSize: 15 } }}
+                  {...register('phone')}
                />
 
                <div className="flex flex-col gap-8 md:gap-6 md:flex-row w-full">
                   <TextField
-                     error={passHelper != ""}
-                     helperText={passHelper}
+                     error={Boolean(errors.password)}
+                     helperText={errors?.password?.message}
                      type={eye ? 'text' : 'password'}
-                     onChange={(e) => { passwordHandler(e.target.value) }}
                      label="Password"
                      id="password"
-                     name="password"
                      size='small'
                      className='w-full'
                      InputProps={{ style: { fontSize: 15 } }}
                      InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('password')}
                   />
                   <TextField
-                     error={!confirm}
-                     helperText={confirm ? "" : "Password does not match"}
+                     error={Boolean(errors.confirm)}
+                     helperText={errors?.confirm?.message}
                      type={eye ? 'text' : 'password'}
                      label="Confirm"
                      id="confirm"
-                     name="confirm"
                      className='w-full'
-                     onChange={e => {
-                        if (e.target.value == password) {
-                           setConfirm(true)
-                        } else {
-                           setConfirm(false)
-                        }
-                     }}
                      size='small'
                      InputProps={{ style: { fontSize: 15 } }}
                      InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('confirm')}
                   />
                </div>
                <div className='flex items-center gap-2'>
@@ -245,16 +227,24 @@ export default function Register() {
                      </Button>
                   </Link>
                   <Button
-                     disabled={!validation || isLoading}
                      id="loginBtn"
                      name="login"
                      type='submit'
                      variant='contained'
-                     onClick={e => submitHandler(e)}
                      className="bg-[#2B4EFF] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 md:h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Register"}
                   </Button>
                </section>
-            </section>
+            </form>
+
+            <Backdrop
+               sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+               open={error != undefined}
+               onClick={closeBackDrop}
+            >
+               <div>
+                  <p>{error}</p>
+               </div>
+            </Backdrop>
          </main>
       </div>
    );
