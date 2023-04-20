@@ -10,7 +10,7 @@ const lora = Lora({ subsets: ["latin"] });
 
 export default function Navbar() {
    return (
-      <nav className="p-5 w-full h-[10%] bg-[#100f10] flex justify-center items-center md:justify-between z-20">
+      <nav className="p-5 w-full h-[10%] bg-[#100f10] flex justify-center items-center md:justify-between fixed z-20">
          <Link href="/">
             <h1 className={`${dancing.className} text-3xl text-[#e7e7e7]`}>
                Mailize

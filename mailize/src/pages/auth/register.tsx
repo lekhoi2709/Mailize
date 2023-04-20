@@ -135,16 +135,18 @@ export default function Register() {
       <div className={`${lora.className} md:flex md:justify-center md:items-center w-screen h-screen`}>
          <picture className="w-full h-screen absolute z-0">
             <Image
-               src="/images/bg1.jpg"
+               src="/images/bg3.jpg"
                alt=""
                fill
                className="contain"
                priority
             />
          </picture>
-         <main className="w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212] md:p-10 md:border md:border-[#121212] rounded-lg relative">
+         <main className=" backdrop-blur-lg w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212]/80 md:bg-[#121212]/70 md:p-10 md:border md:border-[#121212]/70 rounded-lg relative">
             <section className='flex flex-col gap-4 mb-10 md:mb-8'>
-               <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
+               <Link href="/" className="w-fit h-fit">
+                  <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
+               </Link>
                <h1 className="text-lg">Create Account for Mailize</h1>
             </section>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 md:justify-evenly w-full">
