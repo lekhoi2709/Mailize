@@ -28,33 +28,18 @@ const dancing = Dancing_Script({
 const lora = Lora({ subsets: ["latin"] });
 
 interface FormInput {
-   lastName: string,
-   firstName: string,
    email: string,
-   phone: string,
    password: string,
-   confirm: boolean
 }
 
-export default function Register() {
-
+export default function Login() {
    const formSchema = Yup.object().shape({
-      lastName: Yup.string()
-         .required("Please enter your last name"),
-      firstName: Yup.string()
-         .required("Please enter your first name"),
       email: Yup.string()
          .required("Please enter your email")
          .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
-      phone: Yup.string()
-         .required("Please enter your phone number")
-         .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, "Please enter existed phone number"),
       password: Yup.string()
          .required("Please enter your password")
          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
-      confirm: Yup.string()
-         .required("Please confirm your password")
-         .oneOf([Yup.ref('password')], "Password does not match")
    })
 
    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })
@@ -68,7 +53,6 @@ export default function Register() {
 
    const router = useRouter()
 
-
    useEffect(() => {
       clearTimeout(timerRef.current)
    }, [])
@@ -79,47 +63,40 @@ export default function Register() {
    }
 
    const closeBackDrop = () => {
-
       setError(undefined)
    }
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      timerRef.current = setTimeout(() => {
-         router.push('/auth/login', undefined, { shallow: true })
-      })
+      // router.push('/auth/register', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
-      const email = data.email.trim(),
-         phone = data.phone.trim(),
-         lastName = data.lastName.trim(),
-         firstName = data.firstName.trim(),
-         password = data.password.trim()
+      const { email, password } = data
 
       const payload = {
-         email, phone, lastName, firstName, password
+         email, password
       }
 
       setLoading(true)
 
       try {
          const data = await axios({
-            url: "http://localhost:8080/api/auth/register",
+            url: "http://localhost:8080/api/auth/login",
             method: "POST",
             headers: {
                "Content-Type": "application/json"
             },
             data: payload
          })
+         // console.log(data)
          if (data.status == 200) {
             setSuccess(data.data?.msg)
+            localStorage.setItem("token", data.data?.token)
          }
       } catch (err: any) {
-         if (err.response.data.msg.keyPattern.username) {
-            setError("That email is taken. Try another")
-         } else if (err.response.data.msg.keyPattern.phone) {
-            setError("That phone number is taken. Try another")
+         if (err.response?.data?.msg) {
+            setError(err.response?.data?.msg)
          } else {
             console.log(err)
          }
@@ -145,34 +122,9 @@ export default function Register() {
          <main className="w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212] md:p-10 md:border md:border-[#121212] rounded-lg relative">
             <section className='flex flex-col gap-4 mb-10 md:mb-8'>
                <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
-               <h1 className="text-lg">Create Account for Mailize</h1>
+               <h1 className="text-lg">Login</h1>
             </section>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 md:justify-evenly w-full">
-               <div className="flex flex-col gap-8 md:flex-row md:gap-6 w-full">
-                  <TextField
-                     error={Boolean(errors.lastName)}
-                     helperText={errors?.lastName?.message}
-                     label="Last Name"
-                     id="lastName"
-                     size='small'
-                     className='w-full text-sm'
-                     InputProps={{ style: { fontSize: 15 } }}
-                     InputLabelProps={{ style: { fontSize: 15 } }}
-                     {...register('lastName')}
-                  />
-                  <TextField
-                     error={Boolean(errors.firstName)}
-                     helperText={errors?.firstName?.message}
-                     label="First Name"
-                     id="firstName"
-                     size='small'
-                     className='w-full'
-                     InputProps={{ style: { fontSize: 15 } }}
-                     InputLabelProps={{ style: { fontSize: 15 } }}
-                     {...register('firstName')}
-                  />
-               </div>
-
                <TextField
                   error={Boolean(errors.email)}
                   helperText={errors?.email?.message}
@@ -184,46 +136,17 @@ export default function Register() {
                   {...register('email')}
                />
                <TextField
-                  error={Boolean(errors.phone)}
-                  helperText={errors?.phone?.message}
-                  type="tel"
-                  label="Phone"
-                  id="phone"
+                  error={Boolean(errors.password)}
+                  helperText={errors?.password?.message}
+                  type={eye ? 'text' : 'password'}
+                  label="Password"
+                  id="password"
                   size='small'
-                  InputProps={{
-                     startAdornment: <InputAdornment position='start'>+84</InputAdornment>,
-                     style: { fontSize: 15 }
-                  }}
+                  className='w-full'
+                  InputProps={{ style: { fontSize: 15 } }}
                   InputLabelProps={{ style: { fontSize: 15 } }}
-                  {...register('phone')}
+                  {...register('password')}
                />
-
-               <div className="flex flex-col gap-8 md:gap-6 md:flex-row w-full">
-                  <TextField
-                     error={Boolean(errors.password)}
-                     helperText={errors?.password?.message}
-                     type={eye ? 'text' : 'password'}
-                     label="Password"
-                     id="password"
-                     size='small'
-                     className='w-full'
-                     InputProps={{ style: { fontSize: 15 } }}
-                     InputLabelProps={{ style: { fontSize: 15 } }}
-                     {...register('password')}
-                  />
-                  <TextField
-                     error={Boolean(errors.confirm)}
-                     helperText={errors?.confirm?.message}
-                     type={eye ? 'text' : 'password'}
-                     label="Confirm"
-                     id="confirm"
-                     className='w-full'
-                     size='small'
-                     InputProps={{ style: { fontSize: 15 } }}
-                     InputLabelProps={{ style: { fontSize: 15 } }}
-                     {...register('confirm')}
-                  />
-               </div>
                <div className='flex items-center gap-2'>
                   <IconButton onClick={eyeHandle} size='small'>
                      {eye ? <VisibilityIcon fontSize='inherit' /> : <VisibilityOffIcon fontSize='inherit' />}
@@ -231,11 +154,11 @@ export default function Register() {
                   <p className='text-sm'>Show password</p>
                </div>
                <section className='flex justify-between'>
-                  <Link href="/auth/login">
+                  <Link href="/auth/register">
                      <Button
                         variant="text"
-                        className="text-[#2B4EFF] w-28 md:w-40 md:h-10">
-                        Login
+                        className="text-[#2B4EFF] w-28 md:w-40 h-10">
+                        Create Account
                      </Button>
                   </Link>
                   <Button
@@ -243,7 +166,7 @@ export default function Register() {
                      name="login"
                      type='submit'
                      variant='contained'
-                     className="bg-[#2B4EFF] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 md:h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Register"}
+                     className="bg-[#2B4EFF] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
                   </Button>
                </section>
             </form>
@@ -271,6 +194,6 @@ export default function Register() {
                </div>
             </Backdrop>
          </main>
-      </div>
+      </div >
    );
 }

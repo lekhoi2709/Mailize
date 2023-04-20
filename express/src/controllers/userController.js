@@ -25,7 +25,7 @@ module.exports = {
                   return res.status(401).json({ code: 2, msg: err })
                }
                req.session.token = token
-               return res.status(200).json({ code: 0, msg: "Login successfully", token })
+               return res.status(200).json({ code: 0, msg: "Logged In Successfully", token })
             })
 
          })
@@ -41,7 +41,7 @@ module.exports = {
 
          try {
             const user = await User.create({ username: email, phone: phone, password: hash, lastName: lastName, firstName: firstName })
-            return res.status(200).json({ code: 0, user, msg: "Register Successful" })
+            return res.status(200).json({ code: 0, user, msg: "Registered Successfully" })
          } catch (e) {
             return res.status(401).json({ code: 2, msg: e })
          }
