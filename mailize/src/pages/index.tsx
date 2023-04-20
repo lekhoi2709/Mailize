@@ -23,7 +23,7 @@ export default function Home() {
                   who want more.
                </p>
                <div className="text-center md:text-start">
-                  <Link href="/login">
+                  <Link href="/auth/register">
                      <Button
                         variant="contained"
                         className={`${lora.className} p-3 text-[#e7e7e7] bg-[#2B4EFF] hover:bg-[#213ABF] text-md md:text-sm`}
