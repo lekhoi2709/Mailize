@@ -18,7 +18,7 @@ export default function Navbar() {
          </Link>
 
          <div className="gap-1 hidden md:flex items-center">
-            <Link href="/login">
+            <Link href="/auth/register">
                <Button
                   variant="contained"
                   className={`${lora.className} text-[#e7e7e7] bg-[#2B4EFF] hover:bg-[#213ABF] text-[12px]`}
