@@ -56,8 +56,25 @@ export default function Home() {
                   priority
                />
             </picture>
-            <section className="w-full h-full backdrop-blur-lg bg-[#121212]/30">
-
+            <section className="w-full h-full backdrop-blur-lg bg-[#121212]/30 flex items-center justify-center">
+               <div className="h-2/3 w-2/3 flex flex-col gap-8 text-lg">
+                  <h1 className="text-3xl md:text-[3rem] mb-4">Contact Us</h1>
+                  <p>We are always to assist you with any inquiries, issues or feedback you may have.</p>
+                  <section className="h-2/3">
+                     <div className="flex flex-wrap justify-between items-center px-4 h-1/3 backdrop-blur-md bg-[#e7e7e7]/10 rounded-tl-lg rounded-tr-lg">
+                        <p>Email</p>
+                        <p>support@mailize.com</p>
+                     </div>
+                     <div className="flex flex-wrap justify-between items-center px-4 h-1/3">
+                        <p>Telephone</p>
+                        <p>(+84) 909000001</p>
+                     </div>
+                     <div className="flex flex-wrap justify-between items-center px-4 h-1/3 backdrop-blur-md bg-[#e7e7e7]/10 rounded-bl-lg rounded-br-lg">
+                        <p>Address</p>
+                        <p>Nguyen Huu Tho, Tan Phong, Ho Chi Minh</p>
+                     </div>
+                  </section>
+               </div>
             </section>
          </div>
       </main>
