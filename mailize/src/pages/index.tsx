@@ -71,7 +71,7 @@ export default function Home() {
                      </div>
                      <div className="flex flex-wrap justify-between items-center px-4 h-1/3 backdrop-blur-md bg-[#e7e7e7]/10 rounded-bl-lg rounded-br-lg">
                         <p>Address</p>
-                        <p>Nguyen Huu Tho, Tan Phong, Ho Chi Minh</p>
+                        <p>Nguyen Huu Tho, Tan Phong, District 7, HCM</p>
                      </div>
                   </section>
                </div>

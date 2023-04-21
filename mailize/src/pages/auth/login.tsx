@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from 'next/link';
-import { useRouter } from "next/router";
+import { useRouter } from 'next/router';
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { useState, useEffect, useRef } from 'react'
-import { TextField, Button, InputAdornment, IconButton, Backdrop } from "@mui/material";
+import { TextField, Button, IconButton, Backdrop } from "@mui/material";
 
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
@@ -19,6 +20,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
+import { getCsrfToken, signIn } from "next-auth/react";
+
 //
 
 const dancing = Dancing_Script({
@@ -32,7 +35,16 @@ interface FormInput {
    password: string,
 }
 
-export default function Login() {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+   return {
+      props: {
+         csrfToken: await getCsrfToken(context)
+      }
+   }
+}
+
+//
+export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
    const formSchema = Yup.object().shape({
       email: Yup.string()
          .required("Please enter your email")
@@ -54,6 +66,13 @@ export default function Login() {
    const router = useRouter()
 
    useEffect(() => {
+      if (router.asPath == "/auth/login") {
+         router.push("/api/auth/signin", undefined, { shallow: true })
+      }
+   }, [router])
+
+   useEffect(() => {
+
       clearTimeout(timerRef.current)
    }, [])
 
@@ -68,7 +87,7 @@ export default function Login() {
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      // router.push('/auth/register', undefined, { shallow: true })
+      router.push('/inbox', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -81,28 +100,32 @@ export default function Login() {
       setLoading(true)
 
       try {
-         const data = await axios({
-            url: "http://localhost:8080/api/auth/login",
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json"
-            },
-            data: payload
-         })
-         // console.log(data)
-         if (data.status == 200) {
-            setSuccess(data.data?.msg)
-            localStorage.setItem("token", data.data?.token)
-         }
-      } catch (err: any) {
-         if (err.response?.data?.msg) {
-            setError(err.response?.data?.msg)
-         } else {
-            console.log(err)
-         }
-      }
+         // const data = await axios({
+         //    url: "http://localhost:8080/api/auth/login",
+         //    method: "POST",
+         //    headers: {
+         //       "Content-Type": "application/json"
+         //    },
+         //    data: payload
+         // })
 
-      // console.log(payload)
+         const data = await signIn('credentials', {
+            email: email,
+            password: password,
+            redirect: false,
+            callbackUrl: '/'
+         })
+
+         if (data?.status == 200) {
+            setSuccess("Logged In Successfully")
+         }
+
+         if (data?.status == 401) {
+            setError(data?.error)
+         }
+
+      } catch (err: any) { }
+
       timerRef.current = setTimeout(() => {
          setLoading(false)
       }, 1500)
@@ -149,6 +172,12 @@ export default function Login() {
                   InputLabelProps={{ style: { fontSize: 15 } }}
                   {...register('password')}
                />
+               <TextField
+                  type="hidden"
+                  name="csrfToken"
+                  defaultValue={csrfToken}
+                  className="hidden"
+               />
                <div className='flex items-center gap-2'>
                   <IconButton onClick={eyeHandle} size='small'>
                      {eye ? <VisibilityIcon fontSize='inherit' /> : <VisibilityOffIcon fontSize='inherit' />}
@@ -179,9 +208,9 @@ export default function Login() {
                onClick={closeBackDrop}
                className="flex items-center justify-center"
             >
-               <div className="w-1/3 h-1/3 bg-[#121212] text-rose-600 flex gap-3 items-center justify-center">
+               <div className="w-2/3 h-1/3 md:w-1/3 bg-[#121212] font-bold text-rose-600 flex gap-3 items-center justify-center">
                   <ErrorIcon />
-                  <p >{error}</p>
+                  <p>{error}</p>
                </div>
             </Backdrop>
             <Backdrop
@@ -190,7 +219,7 @@ export default function Login() {
                onClick={closeAndRedirectBackDrop}
                className="flex flex-col items-center justify-center"
             >
-               <div className="w-1/3 h-1/3 bg-[#121212] text-green-500 flex gap-3 items-center justify-center">
+               <div className="w-2/3 h-1/3 md:w-1/3 bg-[#121212] font-bold text-green-500 flex gap-3 items-center justify-center">
                   <CheckCircleIcon />
                   <p>{success}</p>
                </div>

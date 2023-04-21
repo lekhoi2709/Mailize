@@ -45,7 +45,7 @@ export default function Register() {
          .required("Please enter your first name"),
       email: Yup.string()
          .required("Please enter your email")
-         .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
+         .matches(/^[a-zA-Z0-9]+$/g, "Email does not contain white space or special characters"),
       phone: Yup.string()
          .required("Please enter your phone number")
          .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, "Please enter existed phone number"),
@@ -86,12 +86,12 @@ export default function Register() {
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
       timerRef.current = setTimeout(() => {
-         router.push('/auth/login', undefined, { shallow: true })
+         router.push('/api/auth/signin', undefined, { shallow: true })
       })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
-      const email = data.email.trim(),
+      const email = data.email.trim() + "@mailize.com",
          phone = data.phone.trim(),
          lastName = data.lastName.trim(),
          firstName = data.firstName.trim(),
@@ -181,7 +181,10 @@ export default function Register() {
                   label="Email"
                   id="email"
                   size='small'
-                  InputProps={{ style: { fontSize: 15 } }}
+                  InputProps={{
+                     style: { fontSize: 15 },
+                     endAdornment: <InputAdornment position="end">@mailize.com</InputAdornment>
+                  }}
                   InputLabelProps={{ style: { fontSize: 15 } }}
                   {...register('email')}
                />
@@ -233,7 +236,7 @@ export default function Register() {
                   <p className='text-sm'>Show password</p>
                </div>
                <section className='flex justify-between'>
-                  <Link href="/auth/login">
+                  <Link href="/api/auth/signin">
                      <Button
                         variant="text"
                         className="text-[#2B4EFF] w-28 md:w-40 md:h-10">
