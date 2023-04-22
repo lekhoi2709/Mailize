@@ -10,9 +10,9 @@ const darkTheme = createTheme({
    },
 })
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: { session, ...pageProps } }: AppProps) {
    return (
-      <SessionProvider>
+      <SessionProvider session={session}>
          <ThemeProvider theme={darkTheme}>
             <CssBaseline />
             <Component {...pageProps} />
