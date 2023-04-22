@@ -87,7 +87,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      router.push('/inbox', undefined, { shallow: true })
+      router.push('/mail/inbox', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
