@@ -208,7 +208,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                onClick={closeBackDrop}
                className="flex items-center justify-center"
             >
-               <div className="w-2/3 h-1/3 md:w-1/3 bg-[#121212] font-bold text-rose-600 flex gap-3 items-center justify-center">
+               <div className="h-fit w-fit px-6 py-16 bg-[#121212] font-bold text-rose-600 flex gap-3 items-center justify-center">
                   <ErrorIcon />
                   <p>{error}</p>
                </div>
@@ -219,7 +219,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                onClick={closeAndRedirectBackDrop}
                className="flex flex-col items-center justify-center"
             >
-               <div className="w-2/3 h-1/3 md:w-1/3 bg-[#121212] font-bold text-green-500 flex gap-3 items-center justify-center">
+               <div className="h-fit w-fit px-6 py-16 bg-[#121212] font-bold text-green-500 flex gap-3 items-center justify-center">
                   <CheckCircleIcon />
                   <p>{success}</p>
                </div>
