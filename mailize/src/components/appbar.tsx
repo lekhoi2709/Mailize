@@ -23,6 +23,18 @@ export default function AppBar() {
    const lastName = session?.user.lastName
    const email = session?.user.email
 
+   var avaLetter: string = ''
+
+   function getLength(str: string | "") {
+      return str.length
+   }
+
+   if (getLength(lastName ?? "") <= 2) {
+      avaLetter = lastName || ''
+   } else {
+      avaLetter = lastName![0]
+   }
+
    return (
       <nav className="flex w-full p-1 text-white items-center bg-[#272727] rounded-full md:bg-[#121212]">
          <div className="flex items-center gap-3 h-fit w-full">
@@ -39,13 +51,14 @@ export default function AppBar() {
                   setDisplay(!display)
                }}
                className="w-fit h-fit">
-               <Avatar sx={{ width: 30, height: 30, fontSize: 15 }}>{session?.user?.lastName}</Avatar>
+               <Avatar sx={{ width: 30, height: 30, fontSize: 15 }}>{avaLetter}</Avatar>
             </IconButton>
             <Dropdown
                display={display}
                lastName={lastName}
                firstName={firstName}
                email={email}
+               avaLetter={avaLetter}
             />
          </div>
       </nav>
