@@ -28,7 +28,6 @@ module.exports = {
                   req.session.token = token
                   return res.status(200).json({
                      code: 0,
-                     msg: "Logged In Successfully",
                      email: user.username,
                      phone: user.phone,
                      role: user.role,
