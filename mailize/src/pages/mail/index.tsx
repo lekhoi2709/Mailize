@@ -36,7 +36,7 @@ export default function MailBox({ children }: Props) {
       )
    } else {
       return (
-         <main className="w-screen h-screen">{children}</main>
+         <main className="w-screen h-screen bg-[#121212]">{children}</main>
       );
    }
 }
