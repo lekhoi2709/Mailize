@@ -142,7 +142,7 @@ export default function Register() {
                priority
             />
          </picture>
-         <main className=" backdrop-blur-lg w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212]/80 md:bg-[#121212]/70 md:p-10 md:border md:border-[#121212]/70 rounded-lg relative">
+         <main className=" backdrop-blur-lg w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212]/80 md:bg-[#121212]/70 md:p-10 md:border md:border-[#121212]/70 md:rounded-lg relative">
             <section className='flex flex-col gap-4 mb-10 md:mb-8'>
                <Link href="/" className="w-fit h-fit">
                   <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>

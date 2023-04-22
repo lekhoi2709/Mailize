@@ -1,16 +1,18 @@
-import { signOut, useSession } from "next-auth/react"
-import { Button } from "@mui/material";
+import { useState } from "react";
+
+import { useSession } from "next-auth/react"
 
 import MailBox from ".";
+import AppBar from "@/components/appbar";
 
 export default function Inbox() {
    const { data: session } = useSession()
+
    return (
       <MailBox>
-         <div>
-            <p>Hello, {session?.user?.firstName} {session?.user?.lastName}</p>
-            <Button onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>Log out</Button>
-         </div>
+         <main className="w-full h-full p-4">
+            <AppBar />
+         </main>
       </MailBox>
    );
 }
