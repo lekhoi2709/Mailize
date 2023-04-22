@@ -259,7 +259,7 @@ export default function Register() {
                onClick={closeBackDrop}
                className="flex items-center justify-center"
             >
-               <div className="w-1/3 h-1/3 bg-[#121212] text-rose-600 flex gap-3 items-center justify-center">
+               <div className="h-fit w-fit px-6 py-16 bg-[#121212] font-bold text-rose-600 flex gap-3 items-center justify-center">
                   <ErrorIcon />
                   <p >{error}</p>
                </div>
@@ -270,7 +270,7 @@ export default function Register() {
                onClick={closeAndRedirectBackDrop}
                className="flex flex-col items-center justify-center"
             >
-               <div className="w-1/3 h-1/3 bg-[#121212] text-green-500 flex gap-3 items-center justify-center">
+               <div className="h-fit w-fit px-6 py-16 bg-[#121212] font-bold text-green-500 flex gap-3 items-center justify-center">
                   <CheckCircleIcon />
                   <p>{success}</p>
                </div>
