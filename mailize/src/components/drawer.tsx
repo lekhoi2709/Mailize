@@ -1,11 +1,7 @@
 import {
    useState,
    Fragment,
-   ReactNode,
-   FunctionComponent
 } from "react";
-
-import Link from "next/link";
 
 import {
    SwipeableDrawer,
@@ -28,10 +24,16 @@ import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 import { useRouter } from "next/router";
 import { Dancing_Script } from "next/font/google";
+import Link from "next/link";
+
 
 const dancing = Dancing_Script({
    subsets: ["latin"],
 });
+
+interface Props {
+
+}
 
 export default function Drawer() {
    const [toggle, setToggle] = useState<boolean>(false)
@@ -81,7 +83,7 @@ export default function Drawer() {
                   role="presentation"
                   onClick={toggleDrawer(false)}
                   onKeyDown={toggleDrawer(false)}
-                  className="bg-[#152c31] md:bg-[#272727] h-full text-md">
+                  className="bg-[#1b2a2d] md:bg-[#272727] h-full text-md">
                   <div>
                      <div className="w-fit h-fit md:hidden pl-4 py-4">
                         <Link href="/">
