@@ -8,7 +8,8 @@ import { Avatar, IconButton, SwipeableDrawer } from "@mui/material";
 import { Dancing_Script } from "next/font/google";
 
 import Dropdown from "@/components/dropdown";
-import Drawer from "@/components/drawer"
+import Drawer from "@/components/drawer";
+import SearchBar from "@/components/searchbar";
 
 const dancing = Dancing_Script({
    subsets: ["latin"],
@@ -36,13 +37,16 @@ export default function AppBar() {
    }
 
    return (
-      <nav className="flex w-full p-1 text-white items-center bg-[#272727] rounded-full md:bg-[#121212]">
-         <div className="flex items-center gap-3 h-fit w-full">
+      <nav className="flex w-full p-1 gap-2 text-white items-center md:justify-between bg-[#272727] rounded-full md:bg-[#121212]">
+         <div className="flex items-center gap-3 h-fit">
             <Drawer />
-            <Link href="/" className="w-fit h-fit hidden md:block">
-               <h1 className={`${dancing.className} text-3xl text-[#e7e7e7]`}>Mailize</h1>
-            </Link>
+            <div className="w-fit h-fit hidden md:block">
+               <Link href="/">
+                  <h1 className={`${dancing.className} text-3xl text-[#e7e7e7]`}>Mailize</h1>
+               </Link>
+            </div>
          </div>
+         <SearchBar />
          <div>
             <IconButton
                onClick={() => {
