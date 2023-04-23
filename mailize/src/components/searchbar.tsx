@@ -1,10 +1,6 @@
-import SearchIcon from '@mui/icons-material/Search';
-
-import { styled, alpha } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import MenuIcon from '@mui/icons-material/Menu';
+import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
+import SearchIcon from '@mui/icons-material/Search';
 
 export default function SearchBar() {
 

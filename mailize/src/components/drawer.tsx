@@ -24,6 +24,7 @@ import InboxIcon from '@mui/icons-material/Inbox';
 import StarIcon from '@mui/icons-material/Star';
 import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
+import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
 import { Dancing_Script } from "next/font/google";
 
@@ -56,6 +57,8 @@ export default function Drawer() {
          case 2:
             return <SendIcon />
          case 3:
+            return <InsertDriveFileIcon />
+         case 4:
             return <DeleteIcon />
       }
    }
@@ -85,7 +88,7 @@ export default function Drawer() {
                      </div>
                      <Divider />
                      <List>
-                        {['Inbox', 'Starred', 'Sent', 'Trash'].map((text, index) => (
+                        {['Inbox', 'Starred', 'Sent', 'Draft', 'Trash'].map((text, index) => (
                            <ListItem key={text}>
                               <ListItemButton className="gap-2 rounded-lg">
                                  <ListItemIcon>
