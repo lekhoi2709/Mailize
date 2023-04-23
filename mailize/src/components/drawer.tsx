@@ -26,6 +26,7 @@ import SendIcon from '@mui/icons-material/Send';
 import DeleteIcon from '@mui/icons-material/Delete';
 import InsertDriveFileIcon from '@mui/icons-material/InsertDriveFile';
 
+import { useRouter } from "next/router";
 import { Dancing_Script } from "next/font/google";
 
 const dancing = Dancing_Script({
@@ -34,6 +35,7 @@ const dancing = Dancing_Script({
 
 export default function Drawer() {
    const [toggle, setToggle] = useState<boolean>(false)
+   const router = useRouter()
 
    const toggleDrawer = (toggle: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -79,7 +81,7 @@ export default function Drawer() {
                   role="presentation"
                   onClick={toggleDrawer(false)}
                   onKeyDown={toggleDrawer(false)}
-                  className="bg-[#262626] h-full text-md">
+                  className="bg-[#152c31] md:bg-[#272727] h-full text-md">
                   <div>
                      <div className="w-fit h-fit md:hidden pl-4 py-4">
                         <Link href="/">
@@ -90,11 +92,11 @@ export default function Drawer() {
                      <List>
                         {['Inbox', 'Starred', 'Sent', 'Draft', 'Trash'].map((text, index) => (
                            <ListItem key={text}>
-                              <ListItemButton className="gap-2 rounded-lg">
-                                 <ListItemIcon>
+                              <ListItemButton onClick={() => router.push(`/mail/${text.toLowerCase()}`)} className="gap-2 rounded-lg">
+                                 <ListItemIcon className="text-[#e7e7e7]">
                                     {iconList(index)}
                                  </ListItemIcon>
-                                 <ListItemText>{text}</ListItemText>
+                                 <ListItemText className="text-[#e7e7e7]" primaryTypographyProps={{ fontSize: 15 }}>{text}</ListItemText>
                               </ListItemButton>
                            </ListItem>
                         ))}
