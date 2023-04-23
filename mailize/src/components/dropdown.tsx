@@ -16,12 +16,13 @@ export default function Dropdown({ display, lastName, firstName, email, avaLette
          <div className="fixed z-40 top-[90px] left-0 w-full rounded-lg bg-[#272727] p-2 md:left-auto md:right-14 md:top-14 md:w-fit ">
             <Box className="bg-[#121212] w-full md:w-fit p-8 rounded-lg ">
                <CardHeader
-                  avatar={<Avatar>{avaLetter}</Avatar>}
+                  avatar={<Avatar sx={{ width: 45, height: 45, fontSize: 20 }}>{avaLetter}</Avatar>}
                   title={`${firstName} ${lastName}`}
-                  subheader={email}>
+                  subheader={email}
+                  className="pl-0">
                </CardHeader>
                <Button
-                  className="flex gap-4 leading-snug text-center"
+                  className="flex gap-4 leading-snug text-center focus:bg-blue-300 focus:text-black rounded-lg"
                   onClick={() => signOut({ redirect: true, callbackUrl: '/' })}>
                   <LogoutIcon />
                   <p>Log out</p>
