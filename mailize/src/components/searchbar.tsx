@@ -5,18 +5,14 @@ import SearchIcon from '@mui/icons-material/Search';
 export default function SearchBar() {
 
    const StyledInputBase = styled(InputBase)(({ theme }) => ({
-      padding: theme.spacing(1, 1, 1, 0),
-      paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+      padding: theme.spacing(1, 1, 0.5, 0),
       transition: theme.transitions.create('width'),
       width: '100%',
    }));
 
    return (
       <div className='w-full md:w-1/3 max-h-full'>
-         <div className='relative w-full bg-[#272727] rounded-lg'>
-            <div className='pl-3 absolute flex items-center justify-center w-fit h-full pointer-events-none'>
-               <SearchIcon />
-            </div>
+         <div className='md:pl-4 md:bg-[#272727] relative w-full rounded-lg'>
             <StyledInputBase
                placeholder="Search in mail"
                inputProps={{ 'aria-label': 'search' }}
