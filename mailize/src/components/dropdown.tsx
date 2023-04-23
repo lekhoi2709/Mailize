@@ -13,7 +13,7 @@ interface Props {
 export default function Dropdown({ display, lastName, firstName, email, avaLetter }: Props) {
    return (
       <Grow in={display}>
-         <div className="fixed z-40 top-[90px] left-0 w-full rounded-lg bg-[#272727] p-2 md:left-auto md:right-14 md:top-14 md:w-fit ">
+         <div className="fixed z-40 top-[90px] left-0 w-full rounded-lg bg-[#152c31] md:bg-[#272727] p-2 pt-6 md:left-auto md:right-14 md:top-14 md:w-fit ">
             <Box className="bg-[#121212] w-full md:w-fit p-8 rounded-lg ">
                <CardHeader
                   avatar={<Avatar sx={{ width: 45, height: 45, fontSize: 20 }}>{avaLetter}</Avatar>}
