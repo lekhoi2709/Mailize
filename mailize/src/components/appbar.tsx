@@ -4,11 +4,12 @@ import Link from 'next/link';
 import { useSession } from "next-auth/react"
 
 import { Avatar, IconButton, SwipeableDrawer } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
 
-import { Dancing_Script, Lora } from "next/font/google";
+import { Dancing_Script } from "next/font/google";
 
 import Dropdown from "@/components/dropdown";
+import Drawer from "@/components/drawer";
+import SearchBar from "@/components/searchbar";
 
 const dancing = Dancing_Script({
    subsets: ["latin"],
@@ -36,15 +37,16 @@ export default function AppBar() {
    }
 
    return (
-      <nav className="flex w-full p-1 text-white items-center bg-[#272727] rounded-full md:bg-[#121212]">
-         <div className="flex items-center gap-3 h-fit w-full">
-            <IconButton>
-               <MenuIcon />
-            </IconButton>
-            <Link href="/" className="w-fit h-fit hidden md:block">
-               <h1 className={`${dancing.className} text-3xl text-[#e7e7e7]`}>Mailize</h1>
-            </Link>
+      <nav className="flex w-full p-1 gap-2 text-white items-center md:justify-between bg-[#1b2a2d] rounded-full md:bg-[#121212]">
+         <div className="flex items-center gap-3 h-fit">
+            <Drawer />
+            <div className="w-fit h-fit hidden md:block">
+               <Link href="/">
+                  <h1 className={`${dancing.className} text-3xl text-[#e7e7e7]`}>Mailize</h1>
+               </Link>
+            </div>
          </div>
+         <SearchBar />
          <div>
             <IconButton
                onClick={() => {

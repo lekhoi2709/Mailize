@@ -3,8 +3,13 @@ import React, { ReactNode, useEffect } from "react"
 import Link from "next/link";
 import { useRouter } from "next/router";
 
-import { Button } from "@mui/material";
 import { useSession } from "next-auth/react"
+
+import Button from "@mui/material/Button";
+import Fab from "@mui/material/Fab"
+import EditIcon from "@mui/icons-material/Edit"
+
+import AppBar from "@/components/appbar";
 
 interface Props {
    children: ReactNode
@@ -18,6 +23,15 @@ export default function MailBox({ children }: Props) {
          router.push("/mail/inbox")
       }
    }, [router])
+
+   const path = router.route.split('/')[2]
+   function Capitalize(path: string) {
+      if (path) {
+         return path[0]?.toUpperCase() + path.substring(1).toLowerCase()
+      }
+      return ''
+   }
+   const page = Capitalize(path)
 
    const { status } = useSession()
    if (status == "unauthenticated") {
@@ -36,7 +50,15 @@ export default function MailBox({ children }: Props) {
       )
    } else {
       return (
-         <main className="w-screen h-screen bg-[#121212]">{children}</main>
+         <main className="w-screen h-screen bg-[#121212] p-4 overflow-y-hidden">
+            <AppBar />
+            <p className="my-4 text-[#8a9698] text-sm md:hidden">{page}</p>
+            {children}
+            <Fab variant="extended" className="bg-[#244147] text-[#a1bbc0] rounded-xl flex items-center justify-center absolute bottom-6 right-6 normal-case hover:bg-[#3f686f]">
+               <EditIcon className="mr-1" />
+               <p>Compose</p>
+            </Fab>
+         </main>
       );
    }
 }
