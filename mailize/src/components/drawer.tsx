@@ -4,16 +4,16 @@ import {
 } from "react";
 
 import {
+   Box,
    SwipeableDrawer,
    IconButton,
-   Box,
    List,
    ListItem,
    ListItemButton,
    ListItemIcon,
    ListItemText,
-   Divider,
-} from "@mui/material";
+   Divider
+} from "@mui/material"
 
 import MenuIcon from '@mui/icons-material/Menu';
 import InboxIcon from '@mui/icons-material/Inbox';

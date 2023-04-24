@@ -1,5 +1,13 @@
-import { Button, Avatar, Grow, Box, CardHeader } from "@mui/material";
+import {
+   Button,
+   Avatar,
+   Grow,
+   Box,
+   CardHeader
+} from "@mui/material"
+
 import LogoutIcon from '@mui/icons-material/Logout';
+
 import { signOut } from 'next-auth/react'
 
 interface Props {

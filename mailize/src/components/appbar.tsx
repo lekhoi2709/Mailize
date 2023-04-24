@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { useSession } from "next-auth/react"
 
-import { Avatar, IconButton, SwipeableDrawer } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
 
 import { Dancing_Script } from "next/font/google";
 
