@@ -12,8 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ErrorIcon from '@mui/icons-material/Error';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
-import axios from 'axios';
-
 import { Dancing_Script, Lora } from "next/font/google";
 
 import { useForm, SubmitHandler } from 'react-hook-form';
@@ -92,11 +90,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
       const { email, password } = data
-
-      const payload = {
-         email, password
-      }
-
       setLoading(true)
 
       try {
