@@ -4,15 +4,19 @@ import { useRouter } from 'next/router';
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { useState, useEffect, useRef } from 'react'
-import { TextField, Button, IconButton, Backdrop } from "@mui/material";
 
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
-import CircularProgress from '@mui/material/CircularProgress';
-import ErrorIcon from '@mui/icons-material/Error';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import {
+   TextField,
+   Button,
+   IconButton,
+   Backdrop,
+   CircularProgress
+} from "@mui/material";
 
-import axios from 'axios';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import ErrorIcon from "@mui/icons-material/Error"
+import CheckCircleIcon from "@mui/icons-material/CheckCircle"
 
 import { Dancing_Script, Lora } from "next/font/google";
 
@@ -92,11 +96,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
       const { email, password } = data
-
-      const payload = {
-         email, password
-      }
-
       setLoading(true)
 
       try {
@@ -107,19 +106,18 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
             callbackUrl: '/'
          })
 
-         if (data?.status == 200) {
-            setSuccess("Logged In Successfully")
-         }
+         timerRef.current = setTimeout(() => {
+            setLoading(false)
+            if (data?.status == 200) {
+               setSuccess("Logged In Successfully")
+            }
 
-         if (data?.status == 401) {
-            setError(data?.error)
-         }
-
+            if (data?.status == 401) {
+               setError(data?.error)
+            }
+         }, 1500)
       } catch (err: any) { }
 
-      timerRef.current = setTimeout(() => {
-         setLoading(false)
-      }, 1500)
    };
 
    return (
