@@ -107,19 +107,18 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
             callbackUrl: '/'
          })
 
-         if (data?.status == 200) {
-            setSuccess("Logged In Successfully")
-         }
+         timerRef.current = setTimeout(() => {
+            setLoading(false)
+            if (data?.status == 200) {
+               setSuccess("Logged In Successfully")
+            }
 
-         if (data?.status == 401) {
-            setError(data?.error)
-         }
-
+            if (data?.status == 401) {
+               setError(data?.error)
+            }
+         }, 1500)
       } catch (err: any) { }
 
-      timerRef.current = setTimeout(() => {
-         setLoading(false)
-      }, 1500)
    };
 
    return (

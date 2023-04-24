@@ -112,23 +112,24 @@ export default function Register() {
             },
             data: payload
          })
-         if (data.status == 200) {
-            setSuccess(data.data?.msg)
-         }
+         timerRef.current = setTimeout(() => {
+            setLoading(false)
+            if (data.status == 200) {
+               setSuccess(data.data?.msg)
+            }
+         }, 1500)
       } catch (err: any) {
-         if (err.response.data.msg.keyPattern.username) {
-            setError("That email is taken. Try another")
-         } else if (err.response.data.msg.keyPattern.phone) {
-            setError("That phone number is taken. Try another")
-         } else {
-            console.log(err)
-         }
+         timerRef.current = setTimeout(() => {
+            setLoading(false)
+            if (err.response.data.msg.keyPattern.username) {
+               setError("That email is taken. Try another")
+            } else if (err.response.data.msg.keyPattern.phone) {
+               setError("That phone number is taken. Try another")
+            } else {
+               console.log(err)
+            }
+         }, 1500)
       }
-
-      // console.log(payload)
-      timerRef.current = setTimeout(() => {
-         setLoading(false)
-      }, 1500)
    };
 
    return (
