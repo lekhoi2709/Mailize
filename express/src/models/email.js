@@ -1,36 +1,30 @@
 const mongoose = require("mongoose")
 
+const sentToSchema = mongoose.Schema({
+   receiver: [String],
+   cc: { type: [String], default: null },
+   bcc: { type: [String], default: null },
+})
+
+const contentSchema = mongoose.Schema({
+   title: String,
+   text: String,
+   attachment: { type: [String], default: null }
+})
+
 const emailSchema = mongoose.Schema({
    from: {
       type: String,
       required: true
    },
 
-   to: {
-      receiver: [{
-         type: String,
-         default: null
-      }],
-      cc: [{
-         type: String,
-         default: null
-      }],
-      bcc: [{
-         type: String,
-         default: null
-      }],
-   },
+   to: sentToSchema,
 
-   content: {
-      title: String,
-      content: {
-         type: String,
-         required: true
-      },
-      attachment: [{
-         type: String,
-         default: null
-      }]
+   content: contentSchema,
+
+   createAt: {
+      type: Date,
+      default: Date.now
    },
 
    starred: {

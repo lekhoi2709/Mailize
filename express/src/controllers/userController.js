@@ -9,7 +9,7 @@ module.exports = {
       await User.findOne({ username: email })
          .then(user => {
             if (!user) {
-               return res.status(401).json({ code: 3, msg: "Username not found" })
+               return res.status(401).json({ code: 1, msg: "Email not found" })
             }
 
             bcrypt.compare(password, user.password, function (err, result) {
@@ -18,7 +18,7 @@ module.exports = {
                }
 
                if (!result) {
-                  return res.status(401).json({ code: 3, msg: "Incorrect password" })
+                  return res.status(401).json({ code: 1, msg: "Incorrect password" })
                }
 
                jwt.sign({ username: user.username }, process.env.SECRET, { expiresIn: "1h" }, (err, token) => {
@@ -51,6 +51,28 @@ module.exports = {
          try {
             const user = await User.create({ username: email, phone: phone, password: hash, lastName: lastName, firstName: firstName })
             return res.status(200).json({ code: 0, user, msg: "Registered Successfully" })
+         } catch (e) {
+            return res.status(401).json({ code: 2, msg: e })
+         }
+      })
+   },
+
+   forgot: (req, res) => {
+      const { email, password } = req.body
+
+      bcrypt.hash(password, 10, async (err, hash) => {
+         if (err) {
+            return res.status(401).json({ code: 2, msg: err })
+         }
+
+         try {
+            await User.findOneAndUpdate({ username: email }, { password: hash }, { new: true })
+               .then(user => {
+                  if (!user) {
+                     return res.status(401).json({ code: 1, msg: "Email not found" })
+                  }
+                  return res.status(200).json({ code: 0, msg: "Changed Password Successfully" })
+               })
          } catch (e) {
             return res.status(401).json({ code: 2, msg: e })
          }
