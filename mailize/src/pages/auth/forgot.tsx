@@ -75,12 +75,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
    const router = useRouter()
 
    useEffect(() => {
-      if (router.asPath == "/auth/login") {
-         router.push("/api/auth/signin", undefined, { shallow: true })
-      }
-   }, [router])
-
-   useEffect(() => {
       clearTimeout(timerRef.current)
    }, [])
 
@@ -95,7 +89,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      router.push('/auth/login', undefined, { shallow: true })
+      router.push('/api/auth/signin', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {

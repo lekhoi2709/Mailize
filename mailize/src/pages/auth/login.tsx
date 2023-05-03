@@ -107,15 +107,15 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
          timerRef.current = setTimeout(() => {
             setLoading(false)
+            console.log(data)
             if (data?.status == 200) {
                setSuccess("Logged In Successfully")
-            }
-
-            if (data?.status == 401) {
+            } else {
                setError(data?.error)
             }
          }, 1500)
-      } catch (err: any) { }
+      } catch (err: any) {
+      }
 
    };
 
