@@ -76,7 +76,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
    }, [router])
 
    useEffect(() => {
-
       clearTimeout(timerRef.current)
    }, [])
 
@@ -100,8 +99,8 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
       try {
          const data = await signIn('credentials', {
-            email: email,
-            password: password,
+            email: email.trim(),
+            password: password.trim(),
             redirect: false,
             callbackUrl: '/'
          })
@@ -134,7 +133,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
          <main className="backdrop-blur-lg w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212]/80 md:bg-[#121212]/70 md:border-[#121212]/70 md:p-10 md:border md:rounded-lg relative">
             <section className='flex flex-col gap-4 mb-10 md:mb-8'>
                <Link href="/" className="w-fit h-fit">
-                  <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
+                  <h1 className={`${dancing.className} text-4xl text-[#006fff]`}>Mailize</h1>
                </Link>
                <h1 className="text-lg">Login</h1>
             </section>
@@ -173,11 +172,14 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                   </IconButton>
                   <p className='text-sm'>Show password</p>
                </div>
+               <div>
+                  <Link href="/auth/forgot" className="text-sm text-[#006fff] underline">Forgot password?</Link>
+               </div>
                <section className='flex justify-between'>
                   <Link href="/auth/register">
                      <Button
                         variant="text"
-                        className="text-[#2B4EFF] w-28 md:w-40 h-10">
+                        className="text-[#006fff] w-28 md:w-40 h-10">
                         Create Account
                      </Button>
                   </Link>
@@ -186,7 +188,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                      name="login"
                      type='submit'
                      variant='contained'
-                     className="bg-[#2B4EFF] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
+                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
                   </Button>
                </section>
             </form>
