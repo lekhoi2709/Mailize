@@ -55,7 +55,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
          .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
       password: Yup.string()
          .required("Please enter your password")
-         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
    })
 
    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })

@@ -57,7 +57,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
          .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
       password: Yup.string()
          .required("Please enter your password")
-         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
       confirm: Yup.string()
          .required("Please confirm your password")
          .oneOf([Yup.ref('password')], "Password does not match")
@@ -95,7 +95,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      router.push('/mail/inbox', undefined, { shallow: true })
+      router.push('/auth/login', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -218,7 +218,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                      name="login"
                      type='submit'
                      variant='contained'
-                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
+                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Change"}
                   </Button>
                </section>
             </form>
