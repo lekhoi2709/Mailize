@@ -26,6 +26,7 @@ import * as Yup from 'yup'
 
 import { getCsrfToken, signIn } from "next-auth/react";
 
+import axios from "axios";
 //
 
 const dancing = Dancing_Script({
@@ -37,6 +38,7 @@ const lora = Lora({ subsets: ["latin"] });
 interface FormInput {
    email: string,
    password: string,
+   confirm: string
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -56,6 +58,9 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
       password: Yup.string()
          .required("Please enter your password")
          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+      confirm: Yup.string()
+         .required("Please confirm your password")
+         .oneOf([Yup.ref('password')], "Password does not match")
    })
 
    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })
@@ -68,12 +73,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
    const [success, setSuccess] = useState<string | undefined>()
 
    const router = useRouter()
-
-   useEffect(() => {
-      if (router.asPath == "/auth/login") {
-         router.push("/api/auth/signin", undefined, { shallow: true })
-      }
-   }, [router])
 
    useEffect(() => {
       clearTimeout(timerRef.current)
@@ -90,40 +89,54 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      router.push('/mail/inbox', undefined, { shallow: true })
+      router.push('/api/auth/signin', undefined, { shallow: true })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
       const { email, password } = data
+      const payload = {
+         email: email.trim(),
+         password: password.trim()
+      }
+
       setLoading(true)
 
       try {
-         const data = await signIn('credentials', {
-            email: email.trim(),
-            password: password.trim(),
-            redirect: false,
-            callbackUrl: '/'
+         const data = await axios({
+            url: "http://localhost:8080/api/auth/forgot",
+            method: "PUT",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            data: payload
          })
 
          timerRef.current = setTimeout(() => {
             setLoading(false)
-            console.log(data)
-            if (data?.status == 200) {
-               setSuccess("Logged In Successfully")
+            if (data.status == 200) {
+               setSuccess(data.data?.msg)
             } else {
-               setError(data?.error)
+               setSuccess(data.data?.msg)
             }
          }, 1500)
-      } catch (err: any) {
-      }
 
+      } catch (err: any) {
+         timerRef.current = setTimeout(() => {
+            setLoading(false)
+            if (err.response.data.msg) {
+               setError(err.response.data.msg)
+            } else {
+               console.log(err)
+            }
+         }, 1500)
+      }
    };
 
    return (
       <div className={`${lora.className} md:flex md:justify-center md:items-center w-screen h-screen`}>
          <picture className="w-full h-screen absolute z-0">
             <Image
-               src="/images/bg2.jpg"
+               src="/images/bg1.jpg"
                alt=""
                fill
                className="contain"
@@ -135,7 +148,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                <Link href="/" className="w-fit h-fit">
                   <h1 className={`${dancing.className} text-4xl text-[#006fff]`}>Mailize</h1>
                </Link>
-               <h1 className="text-lg">Login</h1>
+               <h1 className="text-lg">Change Password</h1>
             </section>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 md:justify-evenly w-full">
                <TextField
@@ -148,18 +161,32 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                   InputLabelProps={{ style: { fontSize: 15 } }}
                   {...register('email')}
                />
-               <TextField
-                  error={Boolean(errors.password)}
-                  helperText={errors?.password?.message}
-                  type={eye ? 'text' : 'password'}
-                  label="Password"
-                  id="password"
-                  size='small'
-                  className='w-full'
-                  InputProps={{ style: { fontSize: 15 } }}
-                  InputLabelProps={{ style: { fontSize: 15 } }}
-                  {...register('password')}
-               />
+               <div className="flex flex-col gap-8 md:gap-6 md:flex-row w-full">
+                  <TextField
+                     error={Boolean(errors.password)}
+                     helperText={errors?.password?.message}
+                     type={eye ? 'text' : 'password'}
+                     label="New Password"
+                     id="password"
+                     size='small'
+                     className='w-full'
+                     InputProps={{ style: { fontSize: 15 } }}
+                     InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('password')}
+                  />
+                  <TextField
+                     error={Boolean(errors.confirm)}
+                     helperText={errors?.confirm?.message}
+                     type={eye ? 'text' : 'password'}
+                     label="Confirm Password"
+                     id="confirm"
+                     className='w-full'
+                     size='small'
+                     InputProps={{ style: { fontSize: 15 } }}
+                     InputLabelProps={{ style: { fontSize: 15 } }}
+                     {...register('confirm')}
+                  />
+               </div>
                <TextField
                   type="hidden"
                   name="csrfToken"
@@ -171,9 +198,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                      {eye ? <VisibilityIcon fontSize='inherit' /> : <VisibilityOffIcon fontSize='inherit' />}
                   </IconButton>
                   <p className='text-sm'>Show password</p>
-               </div>
-               <div>
-                  <Link href="/auth/forgot" className="text-sm text-[#006fff] underline">Forgot password?</Link>
                </div>
                <section className='flex justify-between'>
                   <Link href="/auth/register">
@@ -188,7 +212,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                      name="login"
                      type='submit'
                      variant='contained'
-                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Login"}
+                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Change"}
                   </Button>
                </section>
             </form>

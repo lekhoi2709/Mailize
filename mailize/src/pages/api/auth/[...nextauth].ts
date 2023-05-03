@@ -24,14 +24,8 @@ export default NextAuth({
 
             if (user.code == 0) {
                return user
-            } else if (user.code == 3) {
-               if (user.msg == "Username not found") {
-                  throw new Error("Username not found")
-               } else {
-                  throw new Error("Incorrect password")
-               }
             } else {
-               throw new Error("Error")
+               throw new Error("Incorrect email or password")
             }
          }
       })

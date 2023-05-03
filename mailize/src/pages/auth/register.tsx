@@ -51,7 +51,7 @@ export default function Register() {
          .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, "Please enter existed phone number"),
       password: Yup.string()
          .required("Please enter your password")
-         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
       confirm: Yup.string()
          .required("Please confirm your password")
          .oneOf([Yup.ref('password')], "Password does not match")
@@ -146,7 +146,7 @@ export default function Register() {
          <main className=" backdrop-blur-lg w-full h-full md:h-fit md:w-1/2 p-6 bg-[#121212]/80 md:bg-[#121212]/70 md:p-10 md:border md:border-[#121212]/70 md:rounded-lg relative">
             <section className='flex flex-col gap-4 mb-10 md:mb-8'>
                <Link href="/" className="w-fit h-fit">
-                  <h1 className={`${dancing.className} text-4xl text-[#2B4EFF]`}>Mailize</h1>
+                  <h1 className={`${dancing.className} text-4xl text-[#006fff]`}>Mailize</h1>
                </Link>
                <h1 className="text-lg">Create Account for Mailize</h1>
             </section>
@@ -240,7 +240,7 @@ export default function Register() {
                   <Link href="/api/auth/signin">
                      <Button
                         variant="text"
-                        className="text-[#2B4EFF] w-28 md:w-40 md:h-10">
+                        className="text-[#006fff] w-28 md:w-40 md:h-10">
                         Login
                      </Button>
                   </Link>
@@ -249,7 +249,7 @@ export default function Register() {
                      name="login"
                      type='submit'
                      variant='contained'
-                     className="bg-[#2B4EFF] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 md:h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Register"}
+                     className="bg-[#006fff] hover:bg-[#213ABF] text-[#e7e7e7] w-28 md:w-40 md:h-10">{isLoading ? <CircularProgress size={"1.5rem"} /> : "Register"}
                   </Button>
                </section>
             </form>

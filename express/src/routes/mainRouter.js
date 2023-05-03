@@ -4,6 +4,6 @@ const AuthRouter = require("./auth/index.js");
 const EmailRouter = require('./mail/index.js');
 
 router.use("/auth", AuthRouter);
-// router.use("/email", EmailRouter)
+router.use("/email", EmailRouter)
 
 module.exports = router;
