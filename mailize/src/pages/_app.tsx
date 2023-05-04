@@ -1,8 +1,12 @@
 import '@/styles/globals.css'
+
 import type { AppProps } from 'next/app'
+import { SessionProvider } from 'next-auth/react'
+
 import { ThemeProvider, createTheme } from '@mui/material/styles'
 import CssBaseline from '@mui/material/CssBaseline'
-import { SessionProvider } from 'next-auth/react'
+
+import NextNProgress from 'nextjs-progressbar'
 
 const darkTheme = createTheme({
    palette: {
@@ -15,6 +19,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       <SessionProvider session={session}>
          <ThemeProvider theme={darkTheme}>
             <CssBaseline />
+            <NextNProgress color='#006fff' showOnShallow={true} />
             <Component {...pageProps} />
          </ThemeProvider>
       </SessionProvider>

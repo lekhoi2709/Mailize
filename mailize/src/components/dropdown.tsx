@@ -11,7 +11,6 @@ import LogoutIcon from '@mui/icons-material/Logout';
 
 import { signOut } from 'next-auth/react'
 
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 interface Props {
