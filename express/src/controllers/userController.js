@@ -38,7 +38,7 @@ module.exports = {
                })
             })
          })
-         .catch(e => res.status(401).json({ code: 2, msg: "Error" }))
+         .catch(e => res.status(502).json({ code: 2, msg: "Error" }))
    },
 
    register: (req, res) => {
@@ -52,7 +52,7 @@ module.exports = {
             const user = await User.create({ username: email, phone: phone, password: hash, lastName: lastName, firstName: firstName })
             return res.status(200).json({ code: 0, user, msg: "Registered Successfully" })
          } catch (e) {
-            return res.status(401).json({ code: 2, msg: e })
+            return res.status(502).json({ code: 2, msg: e })
          }
       })
    },
@@ -74,7 +74,7 @@ module.exports = {
                   return res.status(200).json({ code: 0, msg: "Changed Password Successfully" })
                })
          } catch (e) {
-            return res.status(401).json({ code: 2, msg: e })
+            return res.status(502).json({ code: 2, msg: e })
          }
       })
    },
@@ -107,6 +107,16 @@ module.exports = {
                })
             })
          })
-         .catch(e => res.status(401).json({ code: 2, msg: "Error" }))
+         .catch(e => res.status(502).json({ code: 2, msg: "Error" }))
+   },
+
+   delete: async (req, res) => {
+      const { email, phone } = req.body
+
+      await User.deleteOne({ username: email, phone: phone })
+         .then(result => {
+            return res.status(200).json({ code: 0, msg: "Deleted Successfully" })
+         })
+         .catch(e => res.status(502).json({ code: 2, msg: "Error" }))
    }
 }
