@@ -106,7 +106,7 @@ export default function Profile() {
             <h1 className="text-xl hidden md:block">Account Settings</h1>
             <div className="w-full md:w-fit border border-zinc-800 rounded-lg p-5 px-8 flex flex-col gap-12">
                <h1>Personal Information</h1>
-               <div className="flex gap-8 md:gap-32">
+               <div className="flex justify-between md:gap-32">
                   <div className="flex flex-col gap-8 md:gap-12">
                      <div>
                         <span className="text-sm text-zinc-500">First Name</span>
@@ -114,7 +114,7 @@ export default function Profile() {
                      </div>
                      <div>
                         <span className="text-sm text-zinc-500">Email</span>
-                        <p>{session?.user.email}</p>
+                        <p className="break-words w-[130px] md:w-full">{session?.user.email}</p>
                      </div>
                      <div>
                         <span className="text-sm text-zinc-500">Role</span>
