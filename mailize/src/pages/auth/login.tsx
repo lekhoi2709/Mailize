@@ -142,6 +142,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                   error={Boolean(errors.email)}
                   helperText={errors?.email?.message}
                   label="Email"
+                  placeholder="example@mailize.com"
                   id="email"
                   size='small'
                   InputProps={{ style: { fontSize: 15 } }}
