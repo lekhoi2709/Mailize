@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { useState, useEffect, useRef } from 'react'
 
@@ -10,7 +9,8 @@ import {
    Button,
    IconButton,
    Backdrop,
-   CircularProgress
+   CircularProgress,
+   InputAdornment
 } from "@mui/material";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -24,8 +24,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
-import { getCsrfToken, signIn } from "next-auth/react";
-
 import axios from "axios";
 //
 
@@ -37,24 +35,20 @@ const lora = Lora({ subsets: ["latin"] });
 
 interface FormInput {
    email: string,
+   phone: string,
    password: string,
    confirm: string
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-   return {
-      props: {
-         csrfToken: await getCsrfToken(context)
-      }
-   }
-}
-
 //
-export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+export default function ForgotPassword() {
    const formSchema = Yup.object().shape({
       email: Yup.string()
          .required("Please enter your email")
          .matches(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g, "Please enter the correct format of email"),
+      phone: Yup.string()
+         .required("Please enter your phone number")
+         .matches(/^(0?)(3[2-9]|5[6|8|9]|7[0|6-9]|8[0-6|8|9]|9[0-4|6-9])[0-9]{7}$/, "Please enter existed phone number"),
       password: Yup.string()
          .required("Please enter your password")
          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
@@ -93,9 +87,10 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
-      const { email, password } = data
+      const { email, phone, password } = data
       const payload = {
          email: email.trim(),
+         phone: phone.trim(),
          password: password.trim()
       }
 
@@ -148,7 +143,7 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                <Link href="/" className="w-fit h-fit">
                   <h1 className={`${dancing.className} text-4xl text-[#006fff]`}>Mailize</h1>
                </Link>
-               <h1 className="text-lg">Change Password</h1>
+               <h1 className="text-lg">Forgot Password</h1>
             </section>
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8 md:justify-evenly w-full">
                <TextField
@@ -160,6 +155,20 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                   InputProps={{ style: { fontSize: 15 } }}
                   InputLabelProps={{ style: { fontSize: 15 } }}
                   {...register('email')}
+               />
+               <TextField
+                  error={Boolean(errors.phone)}
+                  helperText={errors?.phone?.message}
+                  type="tel"
+                  label="Phone"
+                  id="phone"
+                  size='small'
+                  InputProps={{
+                     startAdornment: <InputAdornment position='start'>+84</InputAdornment>,
+                     style: { fontSize: 15 }
+                  }}
+                  InputLabelProps={{ style: { fontSize: 15 } }}
+                  {...register('phone')}
                />
                <div className="flex flex-col gap-8 md:gap-6 md:flex-row w-full">
                   <TextField
@@ -187,12 +196,6 @@ export default function Login({ csrfToken }: InferGetServerSidePropsType<typeof 
                      {...register('confirm')}
                   />
                </div>
-               <TextField
-                  type="hidden"
-                  name="csrfToken"
-                  defaultValue={csrfToken}
-                  className="hidden"
-               />
                <div className='flex items-center gap-2'>
                   <IconButton onClick={eyeHandle} size='small'>
                      {eye ? <VisibilityIcon fontSize='inherit' /> : <VisibilityOffIcon fontSize='inherit' />}
