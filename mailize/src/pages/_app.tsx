@@ -19,7 +19,7 @@ export default function App({ Component, pageProps: { session, ...pageProps } }:
       <SessionProvider session={session}>
          <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <NextNProgress color='#006fff' showOnShallow={true} />
+            <NextNProgress color='#006fff' options={{ showSpinner: false }} />
             <Component {...pageProps} />
          </ThemeProvider>
       </SessionProvider>
