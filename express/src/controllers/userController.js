@@ -66,7 +66,7 @@ module.exports = {
          }
 
          try {
-            await User.findOneAndUpdate({ username: email, phone: phone }, { password: hash }, { new: true })
+            await User.findOneAndUpdate({ username: email, phone: phone }, { password: hash })
                .then(user => {
                   if (!user) {
                      return res.status(401).json({ code: 1, msg: "Email or Phone number not matched" })
@@ -77,5 +77,36 @@ module.exports = {
             return res.status(401).json({ code: 2, msg: e })
          }
       })
+   },
+
+   change_pass: async (req, res) => {
+      const { email, old_password, password } = req.body
+
+      await User.findOne({ username: email })
+         .then(user => {
+            if (!user) {
+               return res.status(401).json({ code: 1, msg: "Error" })
+            }
+
+            bcrypt.compare(old_password, user.password, function (err, result) {
+               if (err) {
+                  res.status(401).json({ code: 2, msg: err })
+               }
+
+               if (!result) {
+                  return res.status(401).json({ code: 1, msg: "Incorrect password" })
+               }
+
+               bcrypt.hash(password, 10, async (err, hash) => {
+                  if (err) {
+                     return res.status(401).json({ code: 2, msg: err })
+                  }
+                  user.password = hash
+                  await user.save()
+                  return res.status(200).json({ code: 0, msg: "Changed Password Successfully" })
+               })
+            })
+         })
+         .catch(e => res.status(401).json({ code: 2, msg: "Error" }))
    }
 }

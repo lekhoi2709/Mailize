@@ -1,8 +1,7 @@
 import Image from "next/image";
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 import { useState, useEffect, useRef } from 'react'
 
@@ -12,7 +11,6 @@ import {
    IconButton,
    Backdrop,
    CircularProgress,
-   InputAdornment
 } from "@mui/material";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -51,7 +49,8 @@ export default function ChangePassword() {
          .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
       password: Yup.string()
          .required("Please enter your new password")
-         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase"),
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d\w\W]{6,}$/, "Password must contain at least 6 characters, 1 number and 1 uppercase")
+         .notOneOf([Yup.ref('old_password')], "Your new password must different from your old one"),
       confirm: Yup.string()
          .required("Please confirm your password")
          .oneOf([Yup.ref('password')], "Password does not match")
@@ -66,7 +65,6 @@ export default function ChangePassword() {
    const [error, setError] = useState<string | undefined>()
    const [success, setSuccess] = useState<string | undefined>()
 
-   const router = useRouter()
    const { data: session, status } = useSession()
 
    useEffect(() => {
@@ -84,7 +82,7 @@ export default function ChangePassword() {
 
    const closeAndRedirectBackDrop = () => {
       setSuccess(undefined)
-      router.push('/api/auth/signin', undefined, { shallow: true })
+      signOut({ callbackUrl: '/api/auth/signin' })
    }
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
@@ -116,6 +114,7 @@ export default function ChangePassword() {
                setSuccess(data.data?.msg)
             }
          }, 1500)
+
 
       } catch (err: any) {
          timerRef.current = setTimeout(() => {

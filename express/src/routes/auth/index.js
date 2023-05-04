@@ -11,4 +11,7 @@ router.post("/register", controller.register);
 // Forgot password
 router.put("/forgot", controller.forgot)
 
+// Active change password
+router.put("/change-pass", controller.change_pass)
+
 module.exports = router;
