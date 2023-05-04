@@ -58,7 +58,7 @@ module.exports = {
    },
 
    forgot: (req, res) => {
-      const { email, password } = req.body
+      const { email, phone, password } = req.body
 
       bcrypt.hash(password, 10, async (err, hash) => {
          if (err) {
@@ -66,10 +66,10 @@ module.exports = {
          }
 
          try {
-            await User.findOneAndUpdate({ username: email }, { password: hash }, { new: true })
+            await User.findOneAndUpdate({ username: email, phone: phone }, { password: hash }, { new: true })
                .then(user => {
                   if (!user) {
-                     return res.status(401).json({ code: 1, msg: "Email not found" })
+                     return res.status(401).json({ code: 1, msg: "Email or Phone number not matched" })
                   }
                   return res.status(200).json({ code: 0, msg: "Changed Password Successfully" })
                })
