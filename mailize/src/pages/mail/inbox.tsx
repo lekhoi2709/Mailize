@@ -7,8 +7,9 @@ export default function Inbox() {
 
    return (
       <MailBox>
-         <main>
-         </main>
+         <div className="w-full h-full rounded-lg border border-zinc-800">
+
+         </div>
       </MailBox>
    );
 }
