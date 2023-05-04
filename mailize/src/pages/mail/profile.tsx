@@ -38,7 +38,7 @@ export default function Profile() {
                         <p>{session?.user.lastName}</p>
                      </div>
                      <div>
-                        <span className="text-sm text-zinc-500">Phone Number</span>
+                        <span className="text-sm text-zinc-500">Phone</span>
                         <p>{session?.user.phone}</p>
                      </div>
                   </div>

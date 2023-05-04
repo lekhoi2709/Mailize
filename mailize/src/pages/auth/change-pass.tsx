@@ -101,7 +101,8 @@ export default function ChangePassword() {
             url: "http://localhost:8080/api/auth/change-pass",
             method: "PUT",
             headers: {
-               "Content-Type": "application/json"
+               "Content-Type": "application/json",
+               "Authorization": `Bearer ${session?.user.accessToken}`
             },
             data: payload
          })
