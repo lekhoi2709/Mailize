@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 
 import AppBar from "@/components/appbar";
 import Unauthorized from "@/components/unauthorized";
+import ComposeSection from "@/components/compose-section";
 
 interface Props {
    children: ReactNode
@@ -61,6 +62,7 @@ export default function MailBox({ children }: Props) {
                {page === 'Profile' ? <></> : <p className="mb-4 text-white text-sm md:text-lg">{page}</p>}
                {children}
             </main>
+            <ComposeSection />
          </div>
       );
    }
