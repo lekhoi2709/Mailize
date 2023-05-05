@@ -1,11 +1,9 @@
 import React, { ReactNode, useEffect } from "react"
 
-import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/router";
 
 import { useSession } from "next-auth/react"
-
-import Button from "@mui/material/Button";
 
 import AppBar from "@/components/appbar";
 import Unauthorized from "@/components/unauthorized";
@@ -23,14 +21,23 @@ export default function MailBox({ children }: Props) {
       }
    }, [router])
 
-   const path = router.route.split('/')[2]
    function Capitalize(path: string) {
       if (path) {
          return path[0]?.toUpperCase() + path.substring(1).toLowerCase()
       }
       return ''
    }
-   const page = Capitalize(path)
+
+   var page = ""
+
+   if (!router.query.mailid) {
+      const path = router.route.split('/')[2]
+      page = Capitalize(path)
+   } else {
+      const { mailid } = router.query
+      page = mailid![1]
+   }
+
 
    const { status } = useSession()
    if (status == "unauthenticated") {
@@ -39,11 +46,22 @@ export default function MailBox({ children }: Props) {
       )
    } else {
       return (
-         <main className="w-screen h-screen bg-[#121212] p-4 overflow-y-hidden flex flex-col justify-evenly">
-            <AppBar />
-            {page === 'Profile' ? <></> : <p className="mb-4 text-[#8a9698] text-sm md:hidden">{page}</p>}
-            {children}
-         </main>
+         <div className="w-screen h-screen">
+            <picture className="w-full h-screen absolute z-0">
+               <Image
+                  src="/images/bg1.jpg"
+                  alt=""
+                  fill
+                  className="contain"
+                  priority
+               />
+            </picture>
+            <main className="w-full h-full backdrop-blur-lg bg-[#121212]/70 p-4 overflow-x-hidden overflow-y-hidden flex flex-col justify-evenly">
+               <AppBar />
+               {page === 'Profile' ? <></> : <p className="mb-4 text-white text-sm md:text-lg">{page}</p>}
+               {children}
+            </main>
+         </div>
       );
    }
 }

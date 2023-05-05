@@ -7,8 +7,9 @@ export default function Inbox() {
 
    return (
       <MailBox>
-         <main>
-         </main>
+         <div className="w-full h-full rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden">
+
+         </div>
       </MailBox>
    );
 }

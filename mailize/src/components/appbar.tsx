@@ -37,7 +37,7 @@ export default function AppBar() {
    }
 
    return (
-      <nav className="flex w-full p-1 mb-4 gap-2 text-white items-center md:justify-between bg-[#1b2a2d] rounded-full md:bg-[#121212]">
+      <nav className="flex w-full p-1 mb-4 gap-2 text-white items-center md:justify-between bg-[#1b2a2d] rounded-full md:backdrop-blur-lg md:bg-[#000000]/10 md:py-3">
          <div className="flex items-center gap-3 h-fit">
             <Drawer />
             <div className="w-fit h-fit hidden md:block">
