@@ -37,6 +37,11 @@ const emailSchema = mongoose.Schema({
       default: false
    },
 
+   read: {
+      type: Boolean,
+      default: false
+   },
+
    draft: {
       type: Boolean,
    }
