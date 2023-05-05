@@ -18,7 +18,8 @@ interface MailItems {
       }
       starred: boolean,
       trash: boolean,
-      createAt: number
+      createAt: number,
+      read: boolean
    }
 }
 
@@ -39,20 +40,24 @@ export default function MailItem(item: MailItems) {
       avaLetter = lastName![0].toUpperCase()
    }
 
-   const year = moment("2023-04-25T09:41:15.104+00:00").format("YY")
+   const year = moment(mail.createAt).format("YY")
    const now = moment(Date.now()).format("YY")
    var date = ""
 
    if (year == now) {
-      date = moment("2023-04-25T09:41:15.104+00:00").format("MMM D")
+      date = moment(mail.createAt).format("MMM D")
    }
    else {
-      date = moment("2023-04-25T09:41:15.104+00:00").format("MMM D, YY")
+      date = moment(mail.createAt).format("MMM D, YY")
+   }
+
+   const readMail = async () => {
+
    }
 
    return (
-      <Link href={router.asPath + `/${mail._id}`} className="outline-none flex items-center gap-4 text-sm relative w-full p-2 px-4 md:border md:border-gray-600 rounded-lg hover:bg-gray-900 focus:bg-gray-900">
-         <Avatar sx={{ width: 35, height: 35, fontSize: 20 }}>{avaLetter}</Avatar>
+      <Link href={router.asPath + `/${mail._id}`} onClick={readMail} className="outline-none flex items-center gap-4 text-sm relative w-full p-2 px-4 rounded-lg hover:bg-zinc-900 focus:bg-gray-900 md:bg-zinc-700 text-gray-500">
+         <Avatar sx={{ width: 35, height: 35, fontSize: 15 }}>{avaLetter}</Avatar>
          <p className="absolute md:right-2 md:top-2 right-1 top-1">{date}</p>
          <div className="overflow-hidden">
             <h1 className="font-bold text-lg">{mail.from}</h1>
