@@ -10,7 +10,7 @@ export default NextAuth({
             password: {}
          },
          async authorize(credentials, req) {
-            const res = await fetch("http://localhost:8080/api/auth/login", {
+            const res = await fetch(`${process.env.NEXT_PUBLIC_DATABASE_URL}/api/auth/login`, {
                method: "POST",
                headers: {
                   "Content-Type": "application/json"

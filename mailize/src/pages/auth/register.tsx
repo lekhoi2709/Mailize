@@ -105,7 +105,7 @@ export default function Register() {
 
       try {
          const data = await axios({
-            url: "http://localhost:8080/api/auth/register",
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/auth/register`,
             method: "POST",
             headers: {
                "Content-Type": "application/json"

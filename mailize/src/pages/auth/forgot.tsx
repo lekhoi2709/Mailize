@@ -98,7 +98,7 @@ export default function ForgotPassword() {
 
       try {
          const data = await axios({
-            url: "http://localhost:8080/api/auth/forgot",
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/auth/forgot`,
             method: "PUT",
             headers: {
                "Content-Type": "application/json"
