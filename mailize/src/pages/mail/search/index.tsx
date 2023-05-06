@@ -6,7 +6,7 @@ import axios from "axios";
 
 import { CircularProgress } from "@mui/material"
 
-import MailBox from ".";
+import MailBox from "..";
 import MailItem from "@/components/mail-item";
 
 
@@ -31,15 +31,15 @@ interface Email {
    },
    starred: boolean,
    trash: boolean,
-   createAt: string,
    read: boolean,
+   createAt: string,
    __v: number
 }
 
 
-export default function Inbox() {
+export default function Search() {
    const { data: session } = useSession()
-   const [email, setEmail] = useState<Email[]>([])
+   const [email, setEmail] = useState<Email[]>()
    const [loading, setLoading] = useState<boolean>(false)
 
    const useInterval = (callback: () => void, delay: number) => {
@@ -73,7 +73,7 @@ export default function Inbox() {
 
       try {
          const data = await axios({
-            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/starred`,
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/inbox`,
             method: "POST",
             headers: {
                "Content-Type": "application/json",
@@ -87,12 +87,13 @@ export default function Inbox() {
       }
    }
 
-   useInterval(getEmail, 2000)
+   useInterval(getEmail, 5000)
+
 
    return (
       <MailBox>
-         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-start" : "justify-center"}`}>
-            {loading ? email.length <= 0 ? <div>Empty</div> : <></> : <CircularProgress />}
+         <div className={`w-full h-full rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-start" : "justify-center"}`}>
+            {loading ? <></> : <CircularProgress />}
             {email ? email.map((item: any) => {
                return (
                   <MailItem key={item._id} item={item} />

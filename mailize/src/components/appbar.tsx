@@ -24,6 +24,10 @@ export default function AppBar() {
    const lastName = session?.user.lastName
    const email = session?.user.email
 
+   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
+      setDisplay(!display)
+   };
+
    var avaLetter: string = ''
 
    function getLength(str: string | "") {
@@ -37,7 +41,7 @@ export default function AppBar() {
    }
 
    return (
-      <nav className="flex w-full p-1 mb-4 gap-2 text-white items-center md:justify-between bg-[#1b2a2d] rounded-full md:backdrop-blur-lg md:bg-[#000000]/10 md:py-3">
+      <nav className="flex w-full p-1 mb-4 gap-2 text-white items-center md:justify-between bg-[#1b2a2d] rounded-full md:bg-[#000000]/70 md:py-3">
          <div className="flex items-center gap-3 h-fit">
             <Drawer />
             <div className="w-fit h-fit hidden md:block">
@@ -49,9 +53,7 @@ export default function AppBar() {
          <SearchBar />
          <div>
             <IconButton
-               onClick={() => {
-                  setDisplay(!display)
-               }}
+               onClick={handleClick}
                className="w-fit h-fit">
                <Avatar sx={{ width: 30, height: 30, fontSize: 15 }}>{avaLetter}</Avatar>
             </IconButton>

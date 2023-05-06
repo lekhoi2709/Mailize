@@ -1,6 +1,9 @@
 import {
    useState,
    Fragment,
+   useEffect,
+   useCallback,
+   useRef
 } from "react";
 
 import {
@@ -12,7 +15,8 @@ import {
    ListItemButton,
    ListItemIcon,
    ListItemText,
-   Divider
+   Divider,
+   Badge
 } from "@mui/material"
 
 import MenuIcon from '@mui/icons-material/Menu';
@@ -26,18 +30,59 @@ import { useRouter } from "next/router";
 import { Dancing_Script } from "next/font/google";
 import Link from "next/link";
 
+import { useSession } from "next-auth/react";
 
+import axios from "axios";
+
+//
 const dancing = Dancing_Script({
    subsets: ["latin"],
 });
 
-interface Props {
-
-}
-
 export default function Drawer() {
    const [toggle, setToggle] = useState<boolean>(false)
+   const [count, setCount] = useState<Number>(0)
    const router = useRouter()
+   const { data: session } = useSession()
+
+   const useInterval = (callback: () => void, delay: number) => {
+      const timerRef = useRef<number>()
+      const funcRef = useRef(callback)
+      funcRef.current = callback
+
+      useEffect(() => {
+         timerRef.current = window.setInterval(() => {
+            funcRef.current()
+         }, delay < 0 ? 0 : delay)
+
+         return () => {
+            window.clearInterval(timerRef.current)
+         }
+      }, [delay])
+
+      const clear = useCallback(() => {
+         window.clearInterval(timerRef.current)
+      }, [])
+
+      return clear
+   }
+   const getCount = async () => {
+      try {
+         const data = await axios({
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/${session?.user.email}`,
+            method: "GET",
+            headers: {
+               "Content-Type": "application/json",
+               "Authorization": `Bearer ${session?.user.accessToken}`
+            },
+         })
+         setCount(data?.data?.count)
+      } catch (e) {
+         console.log(e)
+      }
+   }
+
+   useInterval(getCount, 5000)
 
    const toggleDrawer = (toggle: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
       if (
@@ -55,7 +100,11 @@ export default function Drawer() {
    function iconList(index: number) {
       switch (index) {
          case 0:
-            return <InboxIcon />
+            return (
+               <Badge badgeContent={Number(count)} max={99} color="primary">
+                  <InboxIcon />
+               </Badge>
+            )
          case 1:
             return <StarIcon />
          case 2:

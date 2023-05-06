@@ -13,7 +13,10 @@ import MailItem from "@/components/mail-item";
 //
 interface Email {
    _id: string,
-   from: string,
+   from: {
+      email: string,
+      name: string
+   },
    to: {
       receiver: string[],
       cc: string[],
@@ -35,7 +38,7 @@ interface Email {
 
 export default function Inbox() {
    const { data: session } = useSession()
-   const [email, setEmail] = useState<Email[]>()
+   const [email, setEmail] = useState<Email[]>([])
    const [loading, setLoading] = useState<boolean>(false)
 
    const useInterval = (callback: () => void, delay: number) => {
@@ -62,6 +65,7 @@ export default function Inbox() {
 
       return clear
    }
+
    const getEmail = async () => {
       const payload = {
          email: session?.user.email
@@ -83,13 +87,12 @@ export default function Inbox() {
       }
    }
 
-   useInterval(getEmail, 5000)
-
+   useInterval(getEmail, 4000)
 
    return (
       <MailBox>
-         <div className={`w-full h-full rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-start" : "justify-center"}`}>
-            {loading ? <></> : <CircularProgress />}
+         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-start" : "justify-center"}`}>
+            {loading ? email.length <= 0 ? <div>Empty</div> : <></> : <CircularProgress />}
             {email ? email.map((item: any) => {
                return (
                   <MailItem key={item._id} item={item} />

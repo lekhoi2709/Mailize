@@ -79,7 +79,6 @@ export default function Register() {
    }
 
    const closeBackDrop = () => {
-
       setError(undefined)
    }
 

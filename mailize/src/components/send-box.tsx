@@ -44,19 +44,26 @@ export default function SendBox() {
    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
+      var title = data.title
+      if (title == "") {
+         title = "(no subject)"
+      }
       const receiver = data.receiver.split(',')
       const cc = data.cc?.split(',')
       const bcc = data.bcc?.split(',')
 
       const payload = {
-         from: data.email,
+         from: {
+            email: data.email,
+            name: session?.user.lastName + " " + session?.user.firstName
+         },
          to: {
             receiver: receiver,
             cc: cc,
             bcc: bcc
          },
          content: {
-            title: data.title,
+            title: title,
             text: data.text
          }
       }

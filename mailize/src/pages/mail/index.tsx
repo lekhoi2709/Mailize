@@ -59,7 +59,7 @@ export default function MailBox({ children }: Props) {
             </picture>
             <main className="w-full h-full backdrop-blur-lg bg-[#121212]/70 p-4 overflow-x-hidden overflow-y-hidden flex flex-col justify-evenly">
                <AppBar />
-               {page === 'Profile' ? <></> : <p className="mb-4 text-white text-sm md:text-lg">{page}</p>}
+               {(page === 'Profile' || /^\d/.test(page)) ? <></> : <p className="mb-4 text-white text-sm md:text-lg">{page}</p>}
                {children}
             </main>
             <ComposeSection />
