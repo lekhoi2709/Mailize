@@ -7,7 +7,10 @@ const sentToSchema = mongoose.Schema({
 })
 
 const contentSchema = mongoose.Schema({
-   title: String,
+   title: {
+      type: String,
+      default: "(no subject)"
+   },
    text: String,
    attachment: { type: [String], default: null }
 })
@@ -46,6 +49,8 @@ const emailSchema = mongoose.Schema({
       type: Boolean,
    }
 })
+
+emailSchema.index({ '$**': "text" })
 
 const Email = mongoose.model('Email', emailSchema)
 module.exports = Email
