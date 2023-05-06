@@ -17,13 +17,25 @@ const contentSchema = mongoose.Schema({
 
 const emailSchema = mongoose.Schema({
    from: {
-      type: String,
-      required: true
+      email: String,
+      name: String
    },
 
    to: sentToSchema,
 
    content: contentSchema,
+
+   reply: {
+      from: {
+         email: String,
+         name: String
+      },
+      to: sentToSchema,
+      content: {
+         text: String,
+         attachment: [String]
+      }
+   },
 
    createAt: {
       type: Date,
