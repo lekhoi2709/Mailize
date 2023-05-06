@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
 
 import { useSession } from "next-auth/react";
 
@@ -16,7 +17,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
 import axios from "axios";
-
 //
 interface FormInput {
    email: string,
@@ -173,7 +173,7 @@ export default function SendBox() {
                   {...register("title")}></TextField>
             </div>
             <div className="w-full p-2">
-               <TextField
+               {/* <TextField
                   error={Boolean(errors.text)}
                   helperText={errors?.text?.message}
                   id="text"
@@ -184,7 +184,7 @@ export default function SendBox() {
                   InputProps={{
                      disableUnderline: true
                   }}
-                  {...register("text")}></TextField>
+                  {...register("text")}></TextField> */}
             </div>
             <div className="absolute right-2 top-4">
                <IconButton type="submit"><SendOutlinedIcon /></IconButton>
