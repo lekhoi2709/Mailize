@@ -67,19 +67,14 @@ export default function Inbox() {
    }
 
    const getEmail = async () => {
-      const payload = {
-         email: session?.user.email
-      }
-
       try {
          const data = await axios({
-            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/inbox`,
-            method: "POST",
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/inbox/${session?.user.email}`,
+            method: "GET",
             headers: {
                "Content-Type": "application/json",
                "Authorization": `Bearer ${session?.user.accessToken}`
             },
-            data: payload,
          })
          setEmail(data.data?.inbox)
       } catch (e) {

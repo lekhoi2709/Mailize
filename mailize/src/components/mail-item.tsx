@@ -114,6 +114,8 @@ export default function MailItem(item: MailItems) {
       }
    }
 
+   const data = JSON.parse(mail.content.text.toString())
+
    return (
       <div className="w-full relative">
          <div onClick={readMail} className={`backdrop-blur-lg outline-none flex items-center gap-4 text-sm w-full p-2 px-4 rounded-lg hover:bg-zinc-900 focus:bg-gray-900 h-[86px] ${mail.read ? "md:bg-zinc-700/20 text-gray-500" : "md:bg-zinc-600/20 text-[#e7e7e7]"} cursor-pointer`}>
@@ -123,7 +125,7 @@ export default function MailItem(item: MailItems) {
                <h1 className={`text-lg ${mail.read ? "" : "font-bold"}`}>{mail.from.name}</h1>
                <div>
                   <p className={`${mail.read ? "" : "font-bold"}`}>{mail.content.title}</p>
-                  <p className="relative truncate">{mail.content.text}</p>
+                  <p className="relative truncate">{data.root.children[0].children[0].text}</p>
                </div>
             </div>
          </div>

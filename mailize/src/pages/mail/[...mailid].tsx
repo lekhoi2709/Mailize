@@ -13,7 +13,8 @@ import {
    DialogContent,
    DialogContentText,
    DialogTitle,
-   Button
+   Button,
+   CircularProgress
 } from "@mui/material"
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -27,6 +28,12 @@ import ReplyIcon from '@mui/icons-material/Reply';
 import axios from "axios"
 
 import moment from "moment"
+import { CLEAR_HISTORY_COMMAND } from "lexical"
+import { LexicalComposer } from '@lexical/react/LexicalComposer';
+import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
+import { ContentEditable } from '@lexical/react/LexicalContentEditable';
+import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 
 
 //
@@ -78,6 +85,7 @@ export default function MailDetails() {
    const [star, setStar] = useState<boolean>(false)
    const [open, setOpen] = useState<boolean>(false)
    const [restore, setRestore] = useState<boolean>(false)
+   const [data, setData] = useState<string>("{\"root\":{\"children\":[{\"children\":[{\"detail\":0,\"format\":3,\"mode\":\"normal\",\"style\":\"\",\"text\":\"\",\"type\":\"text\",\"version\":1}],\"direction\":\"ltr\",\"format\":\"\",\"indent\":0,\"type\":\"paragraph\",\"version\":1}],\"direction\":\"ltr\",\"format\":\"\",\"indent\":0,\"type\":\"root\",\"version\":1}}")
 
    const id = mailid![1] ?? ""
    const path = router.asPath.split('/')
@@ -140,7 +148,7 @@ export default function MailDetails() {
                "Authorization": `Bearer ${session?.user.accessToken}`
             },
          })
-         setEmail(data.data?.email[0])
+         setEmail(data.data.email[0])
       } catch (e) {
          console.log(e)
       }
@@ -164,6 +172,31 @@ export default function MailDetails() {
       avaLetter = lastName!.toUpperCase()[0]
    }
 
+   //Lexical Editor
+   const theme = {}
+
+   function onError(error: Error) {
+      console.error(error);
+   }
+
+   const UpdatePlugin = (): void => {
+      const [editor] = useLexicalComposerContext()
+
+      useEffect(() => {
+         if (email?.content.text !== undefined) {
+            const editorState = editor.parseEditorState(email.content.text)
+            editor.setEditorState(editorState)
+            editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined)
+         }
+      }, [editor])
+
+   }
+
+   const initialConfig = {
+      editable: false,
+      theme,
+      onError
+   }
 
    return (
       <div className="w-screen h-screen text-[#e7e7e7]">
@@ -176,8 +209,9 @@ export default function MailDetails() {
                priority
             />
          </picture>
-         <div className="w-full h-full backdrop-blur-lg bg-[#121212]/70 overflow-x-hidden overflow-y-hidden">
-            <nav className="flex items-center justify-between mb-4 bg-[#121212] w-full p-2">
+
+         <div className={`w-full h-full backdrop-blur-lg bg-[#121212]/70 overflow-x-hidden overflow-y-hidden`}>
+            <nav className={`flex items-center justify-between mb-4 bg-[#121212] w-full p-2`}>
                <IconButton onClick={() => router.push(`/mail/${path[2]}`)}>
                   <ArrowBackIcon />
                </IconButton>
@@ -194,7 +228,6 @@ export default function MailDetails() {
                      <IconButton onClick={() => setOpen(true)}>
                         <DeleteOutlineOutlinedIcon className="text-gray-500" />
                      </IconButton>}
-
                   <IconButton>
                      <MoreVertIcon className="text-gray-500" />
                   </IconButton>
@@ -213,14 +246,25 @@ export default function MailDetails() {
                               <h1>{email?.from.name}</h1>
                               <p className="text-sm text-gray-400">{time}</p>
                            </div>
-                           <p className="text-sm text-gray-500">to {email?.to.receiver == session?.user.email ? "me" : email?.to.receiver}</p>
+                           <p className="text-sm text-gray-500">
+                              to {email?.to.receiver == session?.user.email ? "me" : email?.to.receiver}
+                           </p>
                         </div>
                      </div>
                      <IconButton className="text-gray-500">
                         <ReplyIcon />
                      </IconButton>
                   </section>
-                  <section className="p-4 md:px-12">{email?.content.text}</section>
+                  <section className="p-4 md:px-12">
+                     <LexicalComposer initialConfig={initialConfig}>
+                        <RichTextPlugin
+                           contentEditable={<ContentEditable className='outline-none focus:border focus:border-[#e7e7e7]' />}
+                           placeholder={<div></div>}
+                           ErrorBoundary={LexicalErrorBoundary}
+                        />
+                        <UpdatePlugin />
+                     </LexicalComposer>
+                  </section>
                </div>
             </div>
          </div>

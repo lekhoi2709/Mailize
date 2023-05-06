@@ -17,6 +17,10 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as Yup from 'yup'
 
 import axios from "axios";
+import Editor from "./editor";
+
+import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+
 //
 interface FormInput {
    email: string,
@@ -44,6 +48,7 @@ export default function SendBox() {
    const { register, handleSubmit, formState: { errors } } = useForm<FormInput>({ mode: "onTouched", resolver: yupResolver(formSchema) })
 
    const onSubmit: SubmitHandler<FormInput> = async (data) => {
+      const text = localStorage.getItem("lexical-editor")
       var title = data.title
       if (title == "") {
          title = "(no subject)"
@@ -64,9 +69,11 @@ export default function SendBox() {
          },
          content: {
             title: title,
-            text: data.text
+            text: text
          }
       }
+
+      localStorage.removeItem("lexical-editor")
 
       try {
          const data = await axios({
@@ -86,19 +93,27 @@ export default function SendBox() {
       }
    };
 
+   const handleBack = () => {
+      router.push(`/mail/${router.route.split('/')[2]}`)
+   }
+
+   const handleDrop = () => {
+      setDrop(!drop)
+   }
+
    return (
-      <div className="absolute bg-[#121212] w-full h-full py-4 px-2 md:w-[35%] md:h-[60%] md:top-[40%] md:right-10 top-0">
-         <nav className="flex items-center justify-start mb-4">
+      <main className="absolute bg-[#121212] w-full h-full py-4 px-2 md:w-[35%] md:h-[60%] md:top-[40%] md:right-10 top-0">
+         <div className="flex items-center justify-start mb-4">
             <div className="flex items-center gap-3">
-               <IconButton onClick={() => router.push("/mail/inbox")}>
+               <IconButton onClick={handleBack}>
                   <ArrowBackIcon />
                </IconButton>
                <h1 className="text-xl">Compose</h1>
             </div>
-         </nav>
+         </div>
 
-         <form method="POST" onSubmit={handleSubmit(onSubmit)}>
-            <div className="w-full border-b border-gray-600 p-2">
+         <form method="POST" onSubmit={handleSubmit(onSubmit)} className="h-[calc(100%-40px)]">
+            <div className="w-ful border-b border-gray-600 p-2">
                <TextField
                   error={Boolean(errors.email)}
                   helperText={errors?.email?.message}
@@ -113,7 +128,7 @@ export default function SendBox() {
                   }}
                   {...register("email")}></TextField>
             </div>
-            <div className="w-full border-b border-gray-600 p-2">
+            <div className="w-full h-fit border-b border-gray-600 p-2">
                <TextField
                   error={Boolean(errors.receiver)}
                   helperText={errors?.receiver?.message}
@@ -125,7 +140,7 @@ export default function SendBox() {
                      startAdornment: <InputAdornment position='start'>To: </InputAdornment>,
                      endAdornment:
                         <InputAdornment position='end'>
-                           <IconButton onClick={() => setDrop(!drop)}>
+                           <IconButton onClick={handleDrop}>
                               {drop ? <ArrowDropUpOutlinedIcon></ArrowDropUpOutlinedIcon> : <ArrowDropDownOutlinedIcon></ArrowDropDownOutlinedIcon>}
                            </IconButton>
                         </InputAdornment>,
@@ -172,7 +187,8 @@ export default function SendBox() {
                   }}
                   {...register("title")}></TextField>
             </div>
-            <div className="w-full p-2">
+            <div className="w-full h-[calc(100%-180px)] relative">
+               <Editor />
                {/* <TextField
                   error={Boolean(errors.text)}
                   helperText={errors?.text?.message}
@@ -186,10 +202,8 @@ export default function SendBox() {
                   }}
                   {...register("text")}></TextField> */}
             </div>
-            <div className="absolute right-2 top-4">
-               <IconButton type="submit"><SendOutlinedIcon /></IconButton>
-            </div>
+            <IconButton type="submit" className="absolute right-2 top-4"><SendOutlinedIcon /></IconButton>
          </form>
-      </div>
+      </main>
    )
 }

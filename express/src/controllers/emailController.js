@@ -19,9 +19,9 @@ module.exports = {
    },
 
    inbox: async (req, res) => {
-      const { email } = req.body
+      const { email } = req.params
       try {
-         await Email.find({ 'to.receiver': [`${email}`], "trash": false }).sort({ createAt: -1 })
+         await Email.find({ 'to.receiver': { "$in": [`${email}`] }, "trash": false }).sort({ createAt: -1 })
             .then(email => {
                if (!email) {
                   return res.status(400).json({ code: 201, msg: "Empty" })
@@ -67,6 +67,21 @@ module.exports = {
       }
    },
 
+   get_sent: async (req, res) => {
+      const { email } = req.params
+      try {
+         await Email.find({ 'from.email': email, "trash": false }).sort({ createAt: -1 })
+            .then(email => {
+               if (!email) {
+                  return res.status(400).json({ code: 201, msg: "Empty" })
+               }
+               return res.status(200).json({ code: 200, sent: email })
+            })
+      } catch (err) {
+         return res.status(502).json({ code: 202, msg: err })
+      }
+   },
+
    read: async (req, res) => {
       const { id } = req.body
       await Email.findOneAndUpdate({ _id: id }, { read: true })
@@ -92,7 +107,7 @@ module.exports = {
    },
 
    starred: async (req, res) => {
-      const { email } = req.body
+      const { email } = req.params
       try {
          await Email.find({ 'to.receiver': [`${email}`], 'starred': true, trash: false }).sort({ createAt: -1 })
             .then(email => {

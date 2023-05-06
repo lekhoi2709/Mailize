@@ -7,7 +7,7 @@ const auth = require('../../middleware/authenticate.js')
 router.get('/:email', auth, controller.unread)
 
 //Inbox
-router.post('/inbox', auth, controller.inbox)
+router.get('/inbox/:email', auth, controller.inbox)
 
 //Details
 router.get('/id/:id', auth, controller.detail)
@@ -20,13 +20,14 @@ router.post('/search', auth, controller.search)
 
 //Starred
 router.put('/star', auth, controller.star)
-router.post('/starred', auth, controller.starred)
+router.get('/starred/:email', auth, controller.starred)
 
 // Sent
 router.post('/sent', auth, controller.sent)
+router.get('/sent/:email', auth, controller.get_sent)
 
 //Trash
-router.post('/get-trash', auth, controller.get_trash)
+router.get('/get-trash', auth, controller.get_trash)
 router.put('/trash', auth, controller.trash)
 router.put('/restore', auth, controller.restore)
 router.delete('delete', auth, controller.delete)
