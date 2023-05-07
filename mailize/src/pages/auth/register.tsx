@@ -120,6 +120,7 @@ export default function Register() {
       } catch (err: any) {
          timerRef.current = setTimeout(() => {
             setLoading(false)
+            console.log(err)
             if (err.response.data.msg.keyPattern.username) {
                setError("That email is taken. Try another")
             } else if (err.response.data.msg.keyPattern.phone) {
