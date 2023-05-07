@@ -3,7 +3,7 @@ if (process.env.NODE_ENV != "production") {
 }
 const express = require("express");
 const port = process.env.PORT || 8080;
-const { MONGO_HOST, DB_PORT, DB_NAME } = process.env;
+// const { MONGO_HOST, DB_PORT, DB_NAME } = process.env;
 // var dbUrl = `mongodb://${MONGO_HOST}:${DB_PORT}/${DB_NAME}`;
 var dbUrl = process.env.MONGO_URL
 if (process.env.NODE_ENV == "production") {
