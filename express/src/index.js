@@ -25,7 +25,9 @@ function App() {
          secret: process.env.SECRET,
          resave: false,
          saveUninitialized: false,
-         cookie: { maxAge: 24 * 60 * 60000 }, // 1 day
+         cookie: {
+            maxAge: 24 * 60 * 60 * 1000
+         },
          store: MongoStore.create({
             mongoUrl: dbUrl,
          }),

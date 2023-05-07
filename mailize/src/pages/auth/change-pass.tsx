@@ -98,7 +98,7 @@ export default function ChangePassword() {
 
       try {
          const data = await axios({
-            url: "http://localhost:8080/api/auth/change-pass",
+            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/auth/change-pass`,
             method: "PUT",
             headers: {
                "Content-Type": "application/json",

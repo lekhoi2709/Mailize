@@ -7,20 +7,35 @@ const sentToSchema = mongoose.Schema({
 })
 
 const contentSchema = mongoose.Schema({
-   title: String,
+   title: {
+      type: String,
+      default: "(no subject)"
+   },
    text: String,
    attachment: { type: [String], default: null }
 })
 
 const emailSchema = mongoose.Schema({
    from: {
-      type: String,
-      required: true
+      email: String,
+      name: String
    },
 
    to: sentToSchema,
 
    content: contentSchema,
+
+   reply: {
+      from: {
+         email: String,
+         name: String
+      },
+      to: sentToSchema,
+      content: {
+         text: String,
+         attachment: [String]
+      }
+   },
 
    createAt: {
       type: Date,
@@ -37,10 +52,17 @@ const emailSchema = mongoose.Schema({
       default: false
    },
 
+   read: {
+      type: Boolean,
+      default: false
+   },
+
    draft: {
       type: Boolean,
    }
 })
+
+emailSchema.index({ '$**': "text" })
 
 const Email = mongoose.model('Email', emailSchema)
 module.exports = Email

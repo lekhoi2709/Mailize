@@ -157,8 +157,8 @@ export default function Profile() {
                   <DialogContentText>Are you sure you want to delete your current account?</DialogContentText>
                </DialogContent>
                <DialogActions>
-                  <Button onClick={handleCloseDialog} autoFocus>Cancel</Button>
-                  <Button onClick={confirmDelete}>Yes</Button>
+                  <Button onClick={handleCloseDialog} variant="outlined" autoFocus>Cancel</Button>
+                  <Button onClick={confirmDelete} variant="contained" className="bg-blue-400">Yes</Button>
                </DialogActions>
             </Dialog>
             <Backdrop
