@@ -46,7 +46,7 @@ module.exports = {
       const { lastName, firstName, email, phone, password } = req.body;
       bcrypt.hash(password, 10, async (err, hash) => {
          if (err) {
-            return res.status(401).json({ code: 2, msg: err })
+            return res.status(401).json({ code: 1, msg: err })
          }
 
          try {

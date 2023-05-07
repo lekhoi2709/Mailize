@@ -95,7 +95,6 @@ export default function Register() {
          lastName = data.lastName.trim(),
          firstName = data.firstName.trim(),
          password = data.password.trim()
-
       const payload = {
          email, phone, lastName, firstName, password
       }
