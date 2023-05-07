@@ -12,7 +12,7 @@ npm install
   create a .env.local file
 
 ```bash
-./.env.local
+#./.env.local
 
 NEXTAUTH_SECRET=#anything
 NEXTAUTH_URL=http://localhost:3000/
@@ -26,7 +26,7 @@ Then run `npm run dev` to start application in development
 create a .env file
 
 ```bash
-./.env
+#./.env
 
 NODE_ENV="development"
 SECRET=#anything
