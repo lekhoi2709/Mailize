@@ -43,7 +43,7 @@ function App() {
    // enable CORS
    app.use(
       cors({
-         origin: ["http://localhost:3000", "http://localhost:3001", "mailize.vercel.app"],
+         origin: ["http://localhost:3000", "http://localhost:3001", "https://mailize.vercel.app"],
          credentials: true,
       })
    );
