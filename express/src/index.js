@@ -4,7 +4,10 @@ if (process.env.NODE_ENV != "production") {
 const express = require("express");
 const port = process.env.PORT || 8080;
 const { MONGO_HOST, DB_PORT, DB_NAME } = process.env;
-const dbUrl = `mongodb://${MONGO_HOST}:${DB_PORT}/${DB_NAME}`;
+var dbUrl = `mongodb://${MONGO_HOST}:${DB_PORT}/${DB_NAME}`;
+if (process.env.NODE_ENV == "production") {
+   dbUrl = process.env.DB_URL
+}
 
 // import dependencies
 const cors = require("cors");
@@ -40,7 +43,7 @@ function App() {
    // enable CORS
    app.use(
       cors({
-         origin: ["http://localhost:3000"],
+         origin: ["http://localhost:3000", "http://localhost:3001"],
          credentials: true,
       })
    );
