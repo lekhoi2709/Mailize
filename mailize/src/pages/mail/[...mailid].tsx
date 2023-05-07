@@ -179,7 +179,7 @@ export default function MailDetails() {
       console.error(error);
    }
 
-   const UpdatePlugin = (): void => {
+   const UpdatePlugin = (): null => {
       const [editor] = useLexicalComposerContext()
 
       useEffect(() => {
@@ -189,10 +189,11 @@ export default function MailDetails() {
             editor.dispatchCommand(CLEAR_HISTORY_COMMAND, undefined)
          }
       }, [editor])
-
+      return null
    }
 
    const initialConfig = {
+      namespace: "DisplayEditor",
       editable: false,
       theme,
       onError
