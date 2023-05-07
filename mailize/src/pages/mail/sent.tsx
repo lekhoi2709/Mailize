@@ -36,59 +36,46 @@ interface Email {
 }
 
 
-export default function Inbox() {
+export default function Sent() {
    const { data: session } = useSession()
    const [email, setEmail] = useState<Email[]>([])
    const [loading, setLoading] = useState<boolean>(false)
 
-   const useInterval = (callback: () => void, delay: number) => {
-      const timerRef = useRef<number>()
-      const funcRef = useRef(callback)
-      funcRef.current = callback
+   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>()
 
-      useEffect(() => {
-         timerRef.current = window.setInterval(() => {
-            funcRef.current()
-            setLoading(true)
-         }, delay < 0 ? 0 : delay)
-
-         return () => {
-            window.clearInterval(timerRef.current)
-            setLoading(false)
-         }
-      }, [delay])
-
-      const clear = useCallback(() => {
-         window.clearInterval(timerRef.current)
-         setLoading(false)
-      }, [])
-
-      return clear
-   }
-
-   const getEmail = async () => {
+   const fetchApi = useCallback(async () => {
       try {
-         const data = await axios({
-            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/sent/${session?.user.email}`,
-            method: "GET",
-            headers: {
-               "Content-Type": "application/json",
-               "Authorization": `Bearer ${session?.user.accessToken}`
-            },
-         })
-         setEmail(data.data?.sent)
+         if (session?.user.email !== undefined) {
+            const data = await axios({
+               url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/sent/${session?.user.email}`,
+               method: "GET",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${session?.user.accessToken}`
+               },
+            })
+
+            timerRef.current = setTimeout(() => {
+               setEmail(data.data.sent)
+               setLoading(false)
+            }, 2000)
+         }
       } catch (e) {
          console.log(e)
       }
-   }
+   }, [session?.user.email, session?.user.accessToken])
 
-   useInterval(getEmail, 2000)
+   useEffect(() => {
+      setLoading(true)
+      fetchApi()
+      clearTimeout(timerRef.current)
+   }, [fetchApi])
 
    return (
       <MailBox>
-         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-start" : "justify-center"}`}>
-            {loading ? email.length <= 0 ? <div>Empty</div> : <></> : <CircularProgress />}
-            {email ? email.map((item: any) => {
+         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-center" : "justify-start"}`}>
+            {loading ? <CircularProgress /> : email.length <= 0 ? <p>Empty</p> : <></>}
+            {email && !loading ? email.map((item: any) => {
                return (
                   <MailItem key={item._id} item={item} />
                )

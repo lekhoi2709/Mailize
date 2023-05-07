@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
 const User = require("../models/user")
+const Email = require("../models/email")
 
 module.exports = {
    login: async (req, res) => {
@@ -118,5 +119,26 @@ module.exports = {
             return res.status(200).json({ code: 0, msg: "Deleted Successfully" })
          })
          .catch(e => res.status(502).json({ code: 2, msg: "Error" }))
+   },
+
+   get_admin: async (req, res) => {
+      const { email } = req.params
+      await User.findOne({ username: email, role: "Admin" })
+         .then(user => {
+            if (!user) {
+               return res.status(401).json({ code: 1, msg: "Email not found" })
+            } else {
+               return user
+            }
+         })
+         .then(async (user) => {
+            await Email.find().then(email => {
+               if (!email) {
+                  return res.status(401).json({ code: 1, msg: "Empty" })
+               }
+               return res.status(200).json({ code: 0, data: email })
+            })
+         })
+         .catch(e => res.status(502).json({ code: 2, msg: e }))
    }
 }

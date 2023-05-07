@@ -9,7 +9,6 @@ import { CircularProgress } from "@mui/material"
 import MailBox from ".";
 import MailItem from "@/components/mail-item";
 
-
 //
 interface Email {
    _id: string,
@@ -37,39 +36,46 @@ interface Email {
 }
 
 
-export default function Inbox() {
+export default function Trash() {
    const { data: session } = useSession()
    const [email, setEmail] = useState<Email[]>([])
+   const [loading, setLoading] = useState<boolean>(false)
+
+   const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>()
 
    const fetchApi = useCallback(async () => {
-      const payload = {
-         email: session?.user.email
-      }
       try {
-         const data = await axios({
-            url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/get-trash`,
-            method: "POST",
-            headers: {
-               "Content-Type": "application/json",
-               "Authorization": `Bearer ${session?.user.accessToken}`
-            },
-            data: payload
-         })
-         setEmail(data.data?.trash)
+         if (session?.user.email !== undefined) {
+            const data = await axios({
+               url: `${process.env.NEXT_PUBLIC_DATABASE_URL}/api/email/trash/${session.user.email}`,
+               method: "GET",
+               headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${session?.user.accessToken}`
+               },
+            })
+
+            timerRef.current = setTimeout(() => {
+               setEmail(data.data.trash)
+               setLoading(false)
+            }, 2000)
+         }
       } catch (e) {
          console.log(e)
       }
    }, [session?.user.email, session?.user.accessToken])
 
    useEffect(() => {
+      setLoading(true)
       fetchApi()
+      clearTimeout(timerRef.current)
    }, [fetchApi])
 
    return (
       <MailBox>
-         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center`}>
-            {email.length <= 0 ? <div>Empty</div> : <></>}
-            {email ? email.map((item: any) => {
+         <div className={`w-full h-full z-0 relative rounded-lg flex flex-col gap-3 overflow-y-auto overflow-x-hidden items-center ${loading ? "justify-center" : "justify-start"}`}>
+            {loading ? <CircularProgress /> : email.length <= 0 ? <p>Empty</p> : <></>}
+            {email && !loading ? email.map((item: any) => {
                return (
                   <MailItem key={item._id} item={item} />
                )

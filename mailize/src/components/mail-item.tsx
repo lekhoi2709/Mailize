@@ -90,7 +90,6 @@ export default function MailItem(item: MailItems) {
       handleStarred(star)
    }, [star, handleStarred])
 
-
    const readMail = async () => {
       const payload = {
          id: mail._id

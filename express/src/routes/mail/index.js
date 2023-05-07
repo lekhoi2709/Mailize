@@ -27,7 +27,7 @@ router.post('/sent', auth, controller.sent)
 router.get('/sent/:email', auth, controller.get_sent)
 
 //Trash
-router.get('/get-trash', auth, controller.get_trash)
+router.get('/trash/:email', auth, controller.get_trash)
 router.put('/trash', auth, controller.trash)
 router.put('/restore', auth, controller.restore)
 router.delete('delete', auth, controller.delete)

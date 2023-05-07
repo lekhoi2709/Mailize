@@ -6,7 +6,7 @@ module.exports = {
    unread: async (req, res) => {
       const { email } = req.params
       try {
-         await Email.find({ 'to.receiver': [`${email}`], "trash": false, "read": false })
+         await Email.find({ 'to.receiver': { "$in": [`${email}`] }, "trash": false, "read": false })
             .then(email => {
                if (!email) {
                   return res.status(400).json({ code: 201, msg: "Empty" })
@@ -21,7 +21,7 @@ module.exports = {
    inbox: async (req, res) => {
       const { email } = req.params
       try {
-         await Email.find({ 'to.receiver': { "$in": [`${email}`] }, "trash": false }).sort({ createAt: -1 })
+         await Email.find({ 'to.receiver': { "$in": email }, "trash": false }).sort({ createAt: -1 })
             .then(email => {
                if (!email) {
                   return res.status(400).json({ code: 201, msg: "Empty" })
@@ -109,23 +109,22 @@ module.exports = {
    starred: async (req, res) => {
       const { email } = req.params
       try {
-         await Email.find({ 'to.receiver': [`${email}`], 'starred': true, trash: false }).sort({ createAt: -1 })
+         await Email.find({ 'to.receiver': { "$in": [`${email}`] }, 'starred': true, trash: false }).sort({ createAt: -1 })
             .then(email => {
                if (!email) {
                   return res.status(400).json({ code: 201, msg: "Empty" })
                }
-               return res.status(200).json({ code: 200, inbox: email })
+               return res.status(200).json({ code: 200, starred: email })
             })
       } catch (err) {
          return res.status(502).json({ code: 202, msg: err })
       }
    },
 
-
    search: async (req, res) => {
       const { email, searchResult } = req.body
 
-      await Email.find({ $text: { $search: searchResult }, "to.receiver": [`${email}`] })
+      await Email.find({ $text: { $search: searchResult }, 'to.receiver': { "$in": [`${email}`] } })
          .then(email => {
             if (!email) {
                return res.status(400).json({ code: 201, msg: "Empty" })
@@ -148,9 +147,9 @@ module.exports = {
    },
 
    get_trash: async (req, res) => {
-      const { email } = req.body
+      const { email } = req.params
       try {
-         await Email.find({ 'to.receiver': [`${email}`], trash: true }).sort({ createAt: -1 })
+         await Email.find({ 'to.receiver': { "$in": [`${email}`] }, "trash": true }).sort({ createAt: -1 })
             .then(email => {
                if (!email) {
                   return res.status(400).json({ code: 201, msg: "Empty" })
